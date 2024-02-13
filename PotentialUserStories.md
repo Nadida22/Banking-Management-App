@@ -2,7 +2,7 @@ User Registration:
 
     As a new user, I want to be able to register for an account with my personal information.
     As a user, I want my registration process to be secure and require email verification.
-    As a user, I want to receive confirmation upon successful registration.
+     As a user, I want to receive confirmation upon successful registration. 
 
 User Authentication:
 
