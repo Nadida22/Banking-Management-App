@@ -13,8 +13,6 @@ public class User {
     // email -- String
     // firstname -- String
     // lastname -- String
-    // DOB -- DateTime --date of birth
-    // createdAt -- DateTime -- timestamp for when account was created
     // accounts -- HashSet -- OnetoMany relationship to Account
 
 }
