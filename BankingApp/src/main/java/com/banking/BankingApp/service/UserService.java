@@ -11,6 +11,9 @@ public class UserService {
     // update user credentials
 
 
+    // delete user -- admin only
+
+
 
 
 
