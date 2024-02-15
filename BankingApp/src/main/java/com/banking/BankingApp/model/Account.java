@@ -103,6 +103,20 @@ public class Account {
         this.transactions = transactions;
     }
 
+
+    public static Account sanitize(Account account){
+
+        Account sanitizedAccount = new Account();
+        sanitizedAccount.setAccountId(account.getAccountId());
+        sanitizedAccount.setAccountType(account.getAccountType());
+        sanitizedAccount.setAccountNumber(account.getAccountNumber());
+        sanitizedAccount.setBalance(account.getBalance());
+        // user and transactions not included.
+
+        return sanitizedAccount;
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

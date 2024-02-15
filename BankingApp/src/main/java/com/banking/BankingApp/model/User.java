@@ -125,6 +125,25 @@ public class User {
         this.accounts = accounts;
     }
 
+
+    public static User sanitize(User user) {
+        if (user == null) {
+            return null;
+        }
+    User sanitizedUser = new User();
+        sanitizedUser.setRole(user.getRole());
+        sanitizedUser.setUsername(user.getUsername());
+    // Do not set the password
+        sanitizedUser.setEmail(user.getEmail());
+        sanitizedUser.setFirstName(user.getFirstName());
+        sanitizedUser.setLastName(user.getLastName());
+    // Do not set the accounts as they might contain sensitive data
+
+        return sanitizedUser;
+}
+
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

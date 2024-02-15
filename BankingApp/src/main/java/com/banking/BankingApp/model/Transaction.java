@@ -135,6 +135,28 @@ public class Transaction {
     }
 
 
+
+    public static Transaction sanitize(Transaction transaction) {
+        if (transaction == null) {
+            return null;
+        }
+
+        Transaction sanitizedTransaction = new Transaction();
+        sanitizedTransaction.setTransactionId(transaction.getTransactionId());
+        sanitizedTransaction.setType(transaction.getType());
+        sanitizedTransaction.setAmount(transaction.getAmount());
+        sanitizedTransaction.setTransactionDate(transaction.getTransactionDate());
+        sanitizedTransaction.setStatus(transaction.getStatus());
+        sanitizedTransaction.setRecipientAccount(transaction.getRecipientAccount());
+        sanitizedTransaction.setDescription(transaction.getDescription());
+        // account field not included to avoid exposing account details
+
+        return sanitizedTransaction;
+    }
+
+
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
