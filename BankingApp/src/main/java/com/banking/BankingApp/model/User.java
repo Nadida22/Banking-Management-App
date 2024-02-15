@@ -11,9 +11,6 @@ import java.util.Set;
 @Entity
 public class User {
 
-    // TODO: add fields
-
-
 
     // userid -- long - unique identifier
     // role -- enum -  to distinguish between user role or admin role

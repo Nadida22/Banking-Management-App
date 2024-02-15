@@ -13,10 +13,6 @@ import java.util.Objects;
 @Entity
 public class Transaction {
 
-    // TODO: Add fields
-
-
-
 //    transactionId -- long -- A unique identifier for the transaction.
 //    type -- Enum -- Type of transaction (e.g., deposit, withdrawal, transfer).
 //    amount -- BigDecimal -- The amount of money involved in the transaction.
