@@ -39,6 +39,8 @@ public class UserController {
     }
 
 
+
+
     @DeleteMapping("/userId")
     public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody User adminUser){
         boolean isDeleted = userService.deleteUser(userId, adminUser);
@@ -57,6 +59,8 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+
+    // login
 
 
 
