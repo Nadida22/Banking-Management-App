@@ -22,7 +22,7 @@ public class User {
     // accounts -- HashSet -- OnetoMany relationship to Account
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private long userId;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
