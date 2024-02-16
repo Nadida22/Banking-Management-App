@@ -4,14 +4,15 @@ import com.banking.BankingApp.model.User;
 import com.banking.BankingApp.model.enums.UserRole;
 import com.banking.BankingApp.repository.UserRepository;
 import com.banking.BankingApp.service.UserService;
+import com.banking.BankingApp.validator.UserValidator;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.validation.Errors;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UserServiceTests {
 
@@ -20,11 +21,20 @@ public class UserServiceTests {
     @Mock
     private UserRepository userRepository;
 
+
+    @Mock
+    private UserValidator userValidator;
+
     @InjectMocks
     private UserService userService;
 
 
     public User registerUserTest_Success(User user){
+
+
+
+
+        verify(userValidator).validate(any(User.class), any(Errors.class));
 
         return user;
     }
