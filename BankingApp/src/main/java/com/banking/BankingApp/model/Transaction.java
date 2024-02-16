@@ -4,13 +4,13 @@ package com.banking.BankingApp.model;
 import com.banking.BankingApp.model.enums.TransactionStatus;
 import com.banking.BankingApp.model.enums.TransactionType;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@Table(name="AppTransaction")
 public class Transaction {
 
 //    transactionId -- long -- A unique identifier for the transaction.

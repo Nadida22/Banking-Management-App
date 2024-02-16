@@ -1,10 +1,13 @@
 package com.banking.BankingApp.validator;
 
 import com.banking.BankingApp.model.User;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.lang.NonNull;
 
+
+@Component
 public class UserValidator implements Validator {
 
     @Override

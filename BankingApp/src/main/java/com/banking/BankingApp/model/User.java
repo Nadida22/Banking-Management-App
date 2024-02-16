@@ -9,6 +9,7 @@ import java.util.Set;
 
 
 @Entity
+@Table(name="AppUser")
 public class User {
 
 
@@ -40,6 +41,11 @@ public class User {
     public User() {
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public User(UserRole role, String username, String password, String email, String firstName, String lastName, Set<Account> accounts) {
         this.role = role;
         this.username = username;
@@ -48,6 +54,16 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.accounts = accounts;
+    }
+
+
+    public User(UserRole role, String username, String password, String email, String firstName, String lastName) {
+        this.role = role;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public User(Long userId, UserRole role, String username, String password, String email, String firstName, String lastName, Set<Account> accounts) {
@@ -131,6 +147,7 @@ public class User {
             return null;
         }
     User sanitizedUser = new User();
+        sanitizedUser.setUserId(user.getUserId());
         sanitizedUser.setRole(user.getRole());
         sanitizedUser.setUsername(user.getUsername());
     // Do not set the password
