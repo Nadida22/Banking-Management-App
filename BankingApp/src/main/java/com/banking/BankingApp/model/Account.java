@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name="Account")
 public class Account {
 //    accountId -- long -- unique identifier to reference account
 //    accountType -- Enum -- Type of the account (e.g., savings, checking).
@@ -19,16 +20,21 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name="account_id")
     private Long accountId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name="account_type")
     private AccountType accountType;
 
+    @Column(name="account_number")
     private Long accountNumber;
+
     private BigDecimal balance;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

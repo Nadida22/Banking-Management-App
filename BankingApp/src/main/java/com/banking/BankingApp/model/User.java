@@ -26,6 +26,8 @@ public class User {
     private long userId;
 
     @Enumerated(EnumType.STRING)
+
+    @Column(name="UserRole")
     private UserRole role;
 
     private String username;
