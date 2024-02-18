@@ -29,7 +29,7 @@ public class UserService {
 
 
     // validate User
-    private void validateUser(User user) {
+    private void validateUser(User user) throws InvalidUserException{
         Errors errors = new BeanPropertyBindingResult(user, "user");
         userValidator.validate(user, errors);
         if (errors.hasErrors()) {
@@ -40,7 +40,7 @@ public class UserService {
 
     // register new User
 
-    public User registerUser(User user){
+    public User registerUser(User user) throws InvalidUserException{
         // validate User Object
         validateUser(user);
         // Check that username doesn't exist
@@ -52,7 +52,7 @@ public class UserService {
 
 
         // return sanitized user object
-        User savedUser = userRepository.save(user);
+        userRepository.save(user);
         return User.sanitize(user);
 
 
@@ -61,7 +61,7 @@ public class UserService {
 
 
     // get all users -- administrative
-    public List<User> getAllUsers(){
+    public List<User> findAllUsers(){
         return userRepository.findAll().stream()
                 .map(User::sanitize)
                 .collect(Collectors.toList());
@@ -76,8 +76,17 @@ public class UserService {
     }
 
 
+    public User findByUserId(Long userId) throws NotFoundException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User Account with id: " + userId + " Not Found."));
+        return User.sanitize(user);
+    }
+
+
+
+
     // update user credentials
-    public User updateUserDetails(User userUpdates){
+    public User updateUserDetails(User userUpdates) throws NotFoundException{
         // Can update password.
         // Administrative approval will be needed for firstName and LastName
         validateUser(userUpdates);
@@ -92,7 +101,7 @@ public class UserService {
 
 
     // delete user -- admin only
-    public boolean deleteUser(Long userId, User adminUser){
+    public boolean deleteUser(Long userId, User adminUser) throws UnauthorizedException{
         // Validate admin user
         validateUser(adminUser);
 

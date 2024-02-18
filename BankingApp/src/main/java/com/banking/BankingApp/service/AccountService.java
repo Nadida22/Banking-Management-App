@@ -40,7 +40,7 @@ public class AccountService {
         Errors errors = new BeanPropertyBindingResult(account, "account");
         accountValidator.validate(account, errors);
         if (errors.hasErrors()) {
-            throw new InvalidAccountException("Invalid Account", errors);
+            throw new InvalidAccountException("Account is Invalid.", errors);
         }
     }
 
@@ -49,12 +49,12 @@ public class AccountService {
         Errors errors = new BeanPropertyBindingResult(user, "user");
         userValidator.validate(user, errors);
         if (errors.hasErrors()) {
-            throw new InvalidAccountException("Invalid user", errors);
+            throw new InvalidAccountException("User is Invalid.", errors);
         }
     }
 
     // register new Account
-    public Account RegisterAccount(Account account) throws InvalidAccountException {
+    public Account registerAccount(Account account) throws InvalidAccountException {
 
         checkAccount(account);
         if(account.getAccountType() != AccountType.SAVINGS || account.getAccountType() != AccountType.CHECKING){
@@ -82,7 +82,8 @@ public class AccountService {
     // retrieving all Accounts
     public List<Account> findAllAccounts(){
         return accRepo.findAll().stream()
-                .map(user -> user)
+                // sanitize returned accounts
+                .map(Account::sanitize)
                 .collect(Collectors.toList());
     }
 
