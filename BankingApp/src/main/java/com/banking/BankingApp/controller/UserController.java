@@ -40,7 +40,7 @@ public class UserController {
 
 
 
-    @GetMapping("/user")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable Long userId){
         User response = userService.findByUserId(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -49,7 +49,7 @@ public class UserController {
 
 
 
-    @DeleteMapping("/userId")
+    @DeleteMapping("/user/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody User adminUser){
         boolean isDeleted = userService.deleteUser(userId, adminUser);
         if(!isDeleted)

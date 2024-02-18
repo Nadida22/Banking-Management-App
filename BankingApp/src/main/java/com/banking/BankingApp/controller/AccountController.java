@@ -1,6 +1,4 @@
 package com.banking.BankingApp.controller;
-
-
 import com.banking.BankingApp.exception.InvalidAccountException;
 import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.model.Account;
@@ -21,6 +19,8 @@ import java.util.List;
 @Controller
 public class AccountController {
 
+    // Added Autowired to accountService
+    @Autowired
     private AccountService accountService;
     @Autowired
     public AccountController(AccountService accountService){
@@ -67,11 +67,11 @@ public class AccountController {
 
 
     @GetMapping("/user/{userId}/account")
-    public List<Account> getAccountByUserId(@PathVariable Long userId){
-
+    public ResponseEntity<Account> getAccountByUserId(@PathVariable Long userId){
+        // changed the type returned from List<Account> to ResponseEntity<Account>
         Account result = accountService.findAccountByAccountId(userId);
 
-        return (List<Account>) new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
