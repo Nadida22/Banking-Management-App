@@ -1,6 +1,4 @@
 package com.banking.BankingApp.controller;
-import com.banking.BankingApp.exception.InvalidAccountException;
-import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.model.Account;
 import com.banking.BankingApp.service.AccountService;
 import org.slf4j.Logger;
@@ -8,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
