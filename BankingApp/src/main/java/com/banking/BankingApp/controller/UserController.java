@@ -3,6 +3,7 @@ package com.banking.BankingApp.controller;
 
 import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.model.User;
+import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,16 +26,16 @@ public class UserController {
 
 
     @PostMapping("/user")
-    public ResponseEntity<User> registerUser(@RequestBody User user){
-            logger.info(user.toString());
-            User response = userService.registerUser(user);
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDto){
+            logger.info(userDto.toString());
+            UserDTO response = userService.registerUser(userDto);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/user")
     public ResponseEntity<?> getAllUsers(){
-        List<User> response = userService.findAllUsers();
+        List<UserDTO> response = userService.findAllUsers();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -42,7 +43,7 @@ public class UserController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable Long userId){
-        User response = userService.findByUserId(userId);
+        UserDTO response = userService.findByUserId(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -61,9 +62,9 @@ public class UserController {
     }
 
     @PatchMapping("/user/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId, @RequestBody User user){
-        user.setUserId(userId);
-        User response = userService.updateUserDetails(user);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") Long userId, @RequestBody UserDTO userDto){
+        userDto.setUserId(userId);
+        UserDTO response = userService.updateUserDetails(userDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }

@@ -3,7 +3,10 @@ package com.banking.BankingApp.service;
 import com.banking.BankingApp.exception.InvalidUserException;
 import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.exception.UnauthorizedException;
+import com.banking.BankingApp.model.Account;
 import com.banking.BankingApp.model.User;
+import com.banking.BankingApp.model.dto.AccountDTO;
+import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.model.enums.UserRole;
 import com.banking.BankingApp.repository.UserRepository;
 import com.banking.BankingApp.validator.UserValidator;
@@ -12,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -27,6 +32,54 @@ public class UserService {
     UserValidator userValidator;
 
 
+    public UserDTO convertToDTO(User user){
+        // new UserDTO
+        UserDTO userDto = new UserDTO();
+        userDto.setUserId(user.getUserId());
+        userDto.setRole(user.getRole());
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        Set<AccountDTO> accounts = new HashSet<>();
+
+        for(Account account: user.getAccounts()){
+            AccountDTO newAccountDTO = new AccountDTO(
+                    account.getAccountType(),
+                    account.getAccountNumber(),
+                    account.getBalance(),
+                    account.getUser().getUserId()
+            );
+            accounts.add(newAccountDTO);
+        }
+
+        userDto.setAccounts(accounts);
+
+        return userDto;
+
+    }
+
+
+    public User convertToEntity(UserDTO userDto){
+        // new User entity
+        User user = new User();
+        user.setUserId(userDto.getUserId());
+        user.setRole(userDto.getRole());
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setEmail(userDto.getEmail());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+
+        // retrieve fields not found in DTO.
+//        User foundUser = userRepository.findById(user.getUserId())
+//                .orElseThrow(() -> new NotFoundException("User not found."));
+
+
+        return user;
+
+    }
+
 
     // validate User
     private void validateUser(User user) throws InvalidUserException{
@@ -40,7 +93,9 @@ public class UserService {
 
     // register new User
 
-    public User registerUser(User user) throws InvalidUserException{
+    public UserDTO registerUser(UserDTO userDto) throws InvalidUserException{
+        // convert to entity
+        User user = convertToEntity(userDto);
         // validate User Object
         validateUser(user);
         // Check that username doesn't exist
@@ -53,7 +108,7 @@ public class UserService {
 
         // return sanitized user object
         userRepository.save(user);
-        return User.sanitize(user);
+        return convertToDTO(user);
 
 
 
@@ -61,9 +116,9 @@ public class UserService {
 
 
     // get all users -- administrative
-    public List<User> findAllUsers(){
+    public List<UserDTO> findAllUsers(){
         return userRepository.findAll().stream()
-                .map(User::sanitize)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -76,19 +131,20 @@ public class UserService {
     }
 
 
-    public User findByUserId(Long userId) throws NotFoundException {
+    public UserDTO findByUserId(Long userId) throws NotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User Account with id: " + userId + " Not Found."));
-        return User.sanitize(user);
+        return convertToDTO(user);
     }
 
 
 
 
     // update user credentials
-    public User updateUserDetails(User userUpdates) throws NotFoundException{
+    public UserDTO updateUserDetails(UserDTO userDtoUpdates) throws NotFoundException{
         // Can update password.
         // Administrative approval will be needed for firstName and LastName
+        User userUpdates = convertToEntity(userDtoUpdates);
         validateUser(userUpdates);
         User existingUser = userRepository.findById(userUpdates.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found."));
@@ -96,7 +152,15 @@ public class UserService {
         if(userUpdates.getPassword() != null){
             existingUser.setPassword(userUpdates.getPassword());
         }
-        return userRepository.save(existingUser);
+
+        // TODO: add to separate endpoint. This should require administrative approval.
+        if(userUpdates.getRole() != null){
+            existingUser.setRole(userUpdates.getRole());
+        }
+
+
+        userRepository.save(existingUser);
+        return convertToDTO(existingUser);
     }
 
 

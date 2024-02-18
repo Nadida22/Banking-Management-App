@@ -1,5 +1,4 @@
 package com.banking.BankingApp.model;
-
 import com.banking.BankingApp.model.enums.UserRole;
 import jakarta.persistence.*;
 
@@ -11,7 +10,6 @@ import java.util.Set;
 @Entity
 @Table(name="AppUser")
 public class User {
-
 
     // userid -- long - unique identifier
     // role -- enum -  to distinguish between user role or admin role
@@ -41,11 +39,6 @@ public class User {
 
 
     public User() {
-    }
-
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
     }
 
     public User(UserRole role, String username, String password, String email, String firstName, String lastName, Set<Account> accounts) {
@@ -142,6 +135,17 @@ public class User {
     public void setAccounts(Set<Account> accounts) {
         this.accounts = accounts;
     }
+
+    public void addAccountToList(Account account) {
+
+        this.accounts.add(account);
+    }
+
+    public void removeAccountFromList(Account account){
+        this.accounts.remove(account);
+    }
+
+
 
 
     public static User sanitize(User user) {

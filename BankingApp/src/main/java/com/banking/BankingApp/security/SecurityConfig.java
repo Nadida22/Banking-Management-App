@@ -21,6 +21,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                                 .requestMatchers("/", "/home").permitAll()
                                 .requestMatchers("/user/**").permitAll()
+                                .requestMatchers("/account/**").permitAll()
                                 .anyRequest().authenticated()
                 );
 //                .formLogin((form) ->

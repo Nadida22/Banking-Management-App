@@ -24,11 +24,12 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
 
     @PostMapping("/account")
     public ResponseEntity<Account> registerNewAccount(@RequestBody Account account) {
+        // New accounts should require administrative authentication.
         Account result = accountService.registerAccount(account);
         // removed the exception, since validation and exception is being handled in service.
         return new ResponseEntity<>(result, HttpStatus.CREATED);
@@ -38,6 +39,7 @@ public class AccountController {
 
     @GetMapping("/account")
     public ResponseEntity<?> getAllAccounts(){
+        // getting all accounts should require administrative authentication.
         List<Account> AllAccounts = accountService.findAllAccounts();
         return new ResponseEntity<>(AllAccounts, HttpStatus.OK);
     }

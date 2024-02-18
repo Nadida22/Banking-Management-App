@@ -1,12 +1,12 @@
 package com.banking.BankingApp.model;
 
+
 import com.banking.BankingApp.model.enums.AccountType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+
 
 @Entity
 @Table(name="Account")
@@ -21,20 +21,20 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    @Column(name="account_id")
+
     private Long accountId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="account_type")
+
     private AccountType accountType;
 
-    @Column(name="account_number")
+
     private Long accountNumber;
 
     private BigDecimal balance;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -109,6 +109,15 @@ public class Account {
         this.transactions = transactions;
     }
 
+    public void addTransactionToList(Transaction transaction) {
+
+        this.transactions.add(transaction);
+    }
+    public void removeTransactionFromList(Transaction transaction) {
+
+        this.transactions.remove(transaction);
+    }
+
 
     public static Account sanitize(Account account){
 
@@ -120,6 +129,12 @@ public class Account {
         // user and transactions not included.
 
         return sanitizedAccount;
+
+    }
+
+    public static Long generateUniqueAccountNumber(){
+       UUID uuid = UUID.randomUUID();
+       return uuid.getMostSignificantBits() & Long.MAX_VALUE;
 
     }
 
