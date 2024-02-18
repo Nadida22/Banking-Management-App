@@ -9,14 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class AccountController {
 
     // Added Autowired to accountService
@@ -31,45 +28,34 @@ public class AccountController {
 
 
     @PostMapping("/account")
-    public ResponseEntity<Account> registerNewAccount(@RequestBody Account account){
-
+    public ResponseEntity<Account> registerNewAccount(@RequestBody Account account) {
         Account result = accountService.registerAccount(account);
-
-        try{
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (InvalidAccountException in){
-            throw new InvalidAccountException("Check you input fields!!");
-        }
+        // removed the exception, since validation and exception is being handled in service.
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
+
 
 
     @GetMapping("/account")
     public ResponseEntity<?> getAllAccounts(){
-
         List<Account> AllAccounts = accountService.findAllAccounts();
         return new ResponseEntity<>(AllAccounts, HttpStatus.OK);
     }
 
 
 
-    @GetMapping("/accountId")
+    @GetMapping("/account/{accountId}")
     public ResponseEntity<Account> getAccountById(@PathVariable Long accountId){
-
-        Account accountById;
-
-        try{
-            accountById = accountService.findAccountByAccountId(accountId);
-        }catch(NotFoundException n){
-            throw new NotFoundException("Account Id not found");
-        }
-        return new ResponseEntity<>(accountById, HttpStatus.OK);
+        // exception being handled in Service.
+            Account accountById = accountService.findByAccountId(accountId);
+            return new ResponseEntity<>(accountById, HttpStatus.OK);
     }
 
 
     @GetMapping("/user/{userId}/account")
     public ResponseEntity<Account> getAccountByUserId(@PathVariable Long userId){
         // changed the type returned from List<Account> to ResponseEntity<Account>
-        Account result = accountService.findAccountByAccountId(userId);
+        Account result = accountService.findByAccountId(userId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

@@ -22,21 +22,20 @@ import java.util.stream.Collectors;
 public class AccountService {
 
     @Autowired
-    AccountRepository accRepo;
+    AccountRepository accountRepository;
 
     @Autowired
     AccountValidator accountValidator;
     @Autowired
     UserValidator userValidator;
 
-    public AccountService(AccountRepository accRepo){
-        this.accRepo = accRepo;
+    public AccountService(AccountRepository accountRepository){
+        this.accountRepository = accountRepository;
     }
 
 
     // Checking for Valid account
-    private void checkAccount(Account account){
-
+    private void validateAccount(Account account){
         Errors errors = new BeanPropertyBindingResult(account, "account");
         accountValidator.validate(account, errors);
         if (errors.hasErrors()) {
@@ -44,7 +43,7 @@ public class AccountService {
         }
     }
 
-    private void checkUser(User user){
+    private void validateUser(User user){
 
         Errors errors = new BeanPropertyBindingResult(user, "user");
         userValidator.validate(user, errors);
@@ -55,33 +54,28 @@ public class AccountService {
 
     // register new Account
     public Account registerAccount(Account account) throws InvalidAccountException {
-
-        checkAccount(account);
-        if(account.getAccountType() != AccountType.SAVINGS || account.getAccountType() != AccountType.CHECKING){
+        validateAccount(account);
+        // Ensures getAccountType() returns a valid enum.
+        if(account.getAccountType() != AccountType.SAVINGS && account.getAccountType() != AccountType.CHECKING){
             throw new InvalidUserException("User AccountType is invalid");
         }
-        return accRepo.save(account);
+        return accountRepository.save(account);
     }
 
 
 
     // retrieve Account (and balance details, other fields,  etc.)
-    public Account findAccountByAccountId(Long accountId) throws NotFoundException {
-
-        Optional<Account> checkId = accRepo.findById(accountId);
-
-        if(checkId.isPresent()){
-            return checkId.get();
-        } else{
-            throw new NotFoundException("There is no Account attached with " + accountId);
-        }
+    public Account findByAccountId(Long accountId) throws NotFoundException {
+        // condensed the logic
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("There is no Account attached with " + accountId));
     }
 
 
 
     // retrieving all Accounts
     public List<Account> findAllAccounts(){
-        return accRepo.findAll().stream()
+        return accountRepository.findAll().stream()
                 // sanitize returned accounts
                 .map(Account::sanitize)
                 .collect(Collectors.toList());
@@ -93,18 +87,11 @@ public class AccountService {
 
 
     // retrieve all accounts for a user
-
     public List<Account> findAccountsByUser(User user) throws NotFoundException{
-
-        checkUser(user);
-        Optional<Account> findAccount = accRepo.findAccountsByUser(user);
-
-        if(!findAccount.isPresent()){
-            throw new NotFoundException();
-        }
-
-        return findAccount.stream().toList();
-
+        validateUser(user);
+        return accountRepository.findAccountsByUser(user).stream()
+                .map(Account::sanitize)
+                .collect(Collectors.toList());
     }
 
 
