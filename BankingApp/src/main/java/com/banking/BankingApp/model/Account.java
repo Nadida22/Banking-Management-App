@@ -53,11 +53,17 @@ public class Account {
         this.transactions = transactions;
     }
 
-    public Account(AccountType accountType, Long accountNumber, BigDecimal balance, User user, Set<Transaction> transactions) {
+    public Account(Long accountId, AccountType accountType, Long accountNumber, BigDecimal balance) {
+        this.accountId = accountId;
         this.accountType = accountType;
         this.accountNumber = accountNumber;
         this.balance = balance;
-        this.user = user;
+    }
+
+    public Account(AccountType accountType, Long accountNumber, BigDecimal balance, Set<Transaction> transactions) {
+        this.accountType = accountType;
+        this.accountNumber = accountNumber;
+        this.balance = balance;
         this.transactions = transactions;
     }
 
@@ -113,55 +119,20 @@ public class Account {
 
         this.transactions.add(transaction);
     }
+
     public void removeTransactionFromList(Transaction transaction) {
 
         this.transactions.remove(transaction);
     }
 
 
-    public static Account sanitize(Account account){
 
-        Account sanitizedAccount = new Account();
-        sanitizedAccount.setAccountId(account.getAccountId());
-        sanitizedAccount.setAccountType(account.getAccountType());
-        sanitizedAccount.setAccountNumber(account.getAccountNumber());
-        sanitizedAccount.setBalance(account.getBalance());
-        // user and transactions not included.
-
-        return sanitizedAccount;
+    public static Long generateUniqueAccountNumber() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.getMostSignificantBits() & Long.MAX_VALUE;
 
     }
 
-    public static Long generateUniqueAccountNumber(){
-       UUID uuid = UUID.randomUUID();
-       return uuid.getMostSignificantBits() & Long.MAX_VALUE;
-
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return Objects.equals(accountId, account.accountId) && accountType == account.accountType && Objects.equals(accountNumber, account.accountNumber) && Objects.equals(balance, account.balance) && Objects.equals(user, account.user) && Objects.equals(transactions, account.transactions);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(accountId, accountType, accountNumber, balance, user, transactions);
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "accountId=" + accountId +
-                ", accountType=" + accountType +
-                ", accountNumber=" + accountNumber +
-                ", balance=" + balance +
-                ", user=" + user +
-                ", transactions=" + transactions +
-                '}';
-    }
 }
 
 

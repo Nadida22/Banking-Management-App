@@ -34,7 +34,7 @@ public class UserController {
 
 
     @GetMapping("/user")
-    public ResponseEntity<?> getAllUsers(){
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
         List<UserDTO> response = userService.findAllUsers();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -42,7 +42,7 @@ public class UserController {
 
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable Long userId){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId){
         UserDTO response = userService.findByUserId(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

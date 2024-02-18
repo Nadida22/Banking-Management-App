@@ -1,5 +1,6 @@
 package com.banking.BankingApp.model.dto;
 
+import com.banking.BankingApp.model.Transaction;
 import com.banking.BankingApp.model.enums.AccountType;
 
 import java.math.BigDecimal;
@@ -83,6 +84,13 @@ public class AccountDTO {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    public Set<TransactionDTO> getTransactions(){return transactions;}
+
+    public void setTransactions(Set<TransactionDTO> transactions){
+        this.transactions = transactions;
+    }
+
 
     public void addTransactionToList(TransactionDTO transactionDto) {
 

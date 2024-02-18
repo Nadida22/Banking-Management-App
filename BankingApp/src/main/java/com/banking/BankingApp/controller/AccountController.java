@@ -1,5 +1,6 @@
 package com.banking.BankingApp.controller;
 import com.banking.BankingApp.model.Account;
+import com.banking.BankingApp.model.dto.AccountDTO;
 import com.banking.BankingApp.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,10 @@ import java.util.List;
 @RestController
 public class AccountController {
 
-    // Added Autowired to accountService
+
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
+
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -21,42 +25,41 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
+
 
 
     @PostMapping("/account")
-    public ResponseEntity<Account> registerNewAccount(@RequestBody Account account) {
+    public ResponseEntity<AccountDTO> registerNewAccount(@RequestBody AccountDTO accountDto) {
         // New accounts should require administrative authentication.
-        Account result = accountService.registerAccount(account);
+        AccountDTO response = accountService.registerAccount(accountDto);
         // removed the exception, since validation and exception is being handled in service.
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
 
     @GetMapping("/account")
-    public ResponseEntity<?> getAllAccounts(){
+    public ResponseEntity<List<AccountDTO>> getAllAccounts(){
         // getting all accounts should require administrative authentication.
-        List<Account> AllAccounts = accountService.findAllAccounts();
-        return new ResponseEntity<>(AllAccounts, HttpStatus.OK);
+        List<AccountDTO> response = accountService.findAllAccounts();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
 
     @GetMapping("/account/{accountId}")
-    public ResponseEntity<Account> getAccountById(@PathVariable Long accountId){
+    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long accountId){
         // exception being handled in Service.
-            Account accountById = accountService.findByAccountId(accountId);
-            return new ResponseEntity<>(accountById, HttpStatus.OK);
+            AccountDTO response = accountService.findByAccountId(accountId);
+            return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
     @GetMapping("/user/{userId}/account")
-    public ResponseEntity<Account> getAccountByUserId(@PathVariable Long userId){
+    public ResponseEntity<AccountDTO> getAccountByUserId(@PathVariable Long userId){
         // changed the type returned from List<Account> to ResponseEntity<Account>
-        Account result = accountService.findByAccountId(userId);
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        AccountDTO response = accountService.findByAccountId(userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

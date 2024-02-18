@@ -1,6 +1,5 @@
 package com.banking.BankingApp.service;
 
-import com.banking.BankingApp.controller.UserController;
 import com.banking.BankingApp.exception.InvalidAccountException;
 import com.banking.BankingApp.exception.InvalidUserException;
 import com.banking.BankingApp.exception.NotFoundException;
@@ -20,10 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,18 +32,57 @@ public class AccountService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserService userService;
+
 
     @Autowired
     AccountValidator accountValidator;
     @Autowired
     UserValidator userValidator;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
 
-    public AccountService(AccountRepository accountRepository){
+    public AccountService(AccountRepository accountRepository)
+    {
         this.accountRepository = accountRepository;
     }
 
+
+
+    public AccountDTO convertToDTO(Account account) {
+        AccountDTO accountDto = new AccountDTO();
+        accountDto.setAccountId(account.getAccountId());
+        accountDto.setAccountType(account.getAccountType());
+        accountDto.setAccountNumber(account.getAccountNumber());
+        accountDto.setBalance(account.getBalance());
+
+        if (account.getUser() != null) {
+            accountDto.setUserId(account.getUser().getUserId());
+        }
+        // handle transaction DTOs
+        return accountDto;
+
+    }
+
+
+    public Account convertToEntity(AccountDTO accountDTO) {
+        Account account = new Account();
+        account.setAccountId(accountDTO.getAccountId());
+        account.setAccountType(accountDTO.getAccountType());
+        account.setAccountNumber(accountDTO.getAccountNumber());
+        account.setBalance(accountDTO.getBalance());
+
+        if (accountDTO.getUserId() != null) {
+            User user = userRepository.findById(accountDTO.getUserId())
+                    .orElseThrow(() -> new NotFoundException("User not found"));
+            account.setUser(user);
+        }
+
+
+
+        return account;
+    }
 
 
     // Checking for Valid account
@@ -85,41 +121,48 @@ public class AccountService {
 
 
     // register new Account
-    public Account registerAccount(Account account) throws InvalidAccountException, NotFoundException {
+    public AccountDTO registerAccount(AccountDTO accountDto) throws InvalidAccountException, NotFoundException {
+        // Ensure user is created within the database.
+        User user = userRepository.findById(accountDto.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not Found with Id. Account Not Created"));
+
+        Account account = convertToEntity(accountDto);
+        account.setUser(user);
+
+
         // Ensure account with account number does not exist.
         generateAccountNumber(account);
         // check account object is valid.
         validateAccount(account);
 
-        // Ensure user is created within the database.
-        userRepository.findById(account.getUser().getUserId())
-                .orElseThrow(() -> new NotFoundException("User not Found with Id. Account Not Created"));
-
-
         // Ensures getAccountType() returns a valid enum.
         if(account.getAccountType() != AccountType.SAVINGS && account.getAccountType() != AccountType.CHECKING){
             throw new InvalidUserException("User AccountType is invalid");
         }
-        return accountRepository.save(account);
-        // TODO: needs to be sanitized
+        accountRepository.save(account);
+
+
+
+        return convertToDTO(account);
     }
 
 
 
     // retrieve Account (and balance details, other fields,  etc.)
-    public Account findByAccountId(Long accountId) throws NotFoundException {
+    public AccountDTO findByAccountId(Long accountId) throws NotFoundException {
         // condensed the logic
-        return accountRepository.findById(accountId)
+        Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundException("There is no Account attached with " + accountId));
+        return convertToDTO(account);
     }
 
 
 
     // retrieving all Accounts
-    public List<Account> findAllAccounts(){
+    public List<AccountDTO> findAllAccounts(){
         return accountRepository.findAll().stream()
                 // sanitize returned accounts
-                .map(Account::sanitize)
+                .map(this:: convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -129,10 +172,11 @@ public class AccountService {
 
 
     // retrieve all accounts for a user
-    public List<Account> findAccountsByUser(User user) throws NotFoundException{
+    public List<AccountDTO> findAccountsByUser(UserDTO userDto) throws NotFoundException{
+        User user = userService.convertToEntity(userDto);
         validateUser(user);
         return accountRepository.findAccountsByUser(user).stream()
-                .map(Account::sanitize)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 

@@ -8,8 +8,12 @@ import com.banking.BankingApp.model.User;
 import com.banking.BankingApp.model.dto.AccountDTO;
 import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.model.enums.UserRole;
+import com.banking.BankingApp.repository.AccountRepository;
 import com.banking.BankingApp.repository.UserRepository;
 import com.banking.BankingApp.validator.UserValidator;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -29,39 +33,58 @@ public class UserService {
     UserRepository userRepository;
 
     @Autowired
+    AccountRepository accountRepository;
+
+    @Autowired
     UserValidator userValidator;
+
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
 
     public UserDTO convertToDTO(User user){
         // new UserDTO
+        Set<AccountDTO> accounts = new HashSet<>();
         UserDTO userDto = new UserDTO();
         userDto.setUserId(user.getUserId());
         userDto.setRole(user.getRole());
+        userDto.setPassword(user.getPassword());
         userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
-        Set<AccountDTO> accounts = new HashSet<>();
+        if(user.getAccounts() != null){
 
-        for(Account account: user.getAccounts()){
-            AccountDTO newAccountDTO = new AccountDTO(
-                    account.getAccountType(),
-                    account.getAccountNumber(),
-                    account.getBalance(),
-                    account.getUser().getUserId()
-            );
-            accounts.add(newAccountDTO);
+
+            for(Account account: user.getAccounts()){
+                AccountDTO newAccountDTO = new AccountDTO(
+                        account.getAccountId(),
+                        account.getAccountType(),
+                        account.getAccountNumber(),
+                        account.getBalance(),
+                        account.getUser().getUserId()
+                );
+                accounts.add(newAccountDTO);
+
+                logger.info(user.getAccounts().toString());
+
+
+            }
+            userDto.setAccounts(accounts);
         }
 
-        userDto.setAccounts(accounts);
+
+
+
+//         handle account DTOs
+
+
 
         return userDto;
-
     }
 
 
-    public User convertToEntity(UserDTO userDto){
-        // new User entity
+    public User convertToEntity(UserDTO userDto) {
         User user = new User();
         user.setUserId(userDto.getUserId());
         user.setRole(userDto.getRole());
@@ -70,14 +93,22 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
+        Set<Account> accounts = new HashSet<>();
 
-        // retrieve fields not found in DTO.
-//        User foundUser = userRepository.findById(user.getUserId())
-//                .orElseThrow(() -> new NotFoundException("User not found."));
-
+        if (userDto.getAccounts() != null) { // Check if accounts set is not null
+            for (AccountDTO accountDto : userDto.getAccounts()) {
+                Account newAccount = new Account(
+                        accountDto.getAccountId(),
+                        accountDto.getAccountType(),
+                        accountDto.getAccountNumber(),
+                        accountDto.getBalance()
+                );
+                accounts.add(newAccount);
+            }
+        }
+        user.setAccounts(accounts);
 
         return user;
-
     }
 
 
@@ -116,6 +147,7 @@ public class UserService {
 
 
     // get all users -- administrative
+    @Transactional
     public List<UserDTO> findAllUsers(){
         return userRepository.findAll().stream()
                 .map(this::convertToDTO)

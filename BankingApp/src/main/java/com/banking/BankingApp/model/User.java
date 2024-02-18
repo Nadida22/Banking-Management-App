@@ -136,61 +136,16 @@ public class User {
         this.accounts = accounts;
     }
 
-    public void addAccountToList(Account account) {
+    public void addAccountToSet(Account account) {
 
         this.accounts.add(account);
+        account.setUser(this);
     }
 
-    public void removeAccountFromList(Account account){
+    public void removeAccountFromSet(Account account){
         this.accounts.remove(account);
+        account.setUser(null);
     }
 
 
-
-
-    public static User sanitize(User user) {
-        if (user == null) {
-            return null;
-        }
-    User sanitizedUser = new User();
-        sanitizedUser.setUserId(user.getUserId());
-        sanitizedUser.setRole(user.getRole());
-        sanitizedUser.setUsername(user.getUsername());
-    // Do not set the password
-        sanitizedUser.setEmail(user.getEmail());
-        sanitizedUser.setFirstName(user.getFirstName());
-        sanitizedUser.setLastName(user.getLastName());
-    // Do not set the accounts as they might contain sensitive data
-
-        return sanitizedUser;
-}
-
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(userId, user.userId) && role == user.role && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(accounts, user.accounts);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, role, username, password, email, firstName, lastName, accounts);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", role=" + role +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", accounts=" + accounts +
-                '}';
-    }
 }
