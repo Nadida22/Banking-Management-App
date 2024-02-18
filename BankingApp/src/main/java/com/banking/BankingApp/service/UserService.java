@@ -21,6 +21,7 @@ import org.springframework.validation.Errors;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -93,6 +94,13 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
+        Set<Account> accounts = getAccounts(userDto);
+        user.setAccounts(accounts);
+
+        return user;
+    }
+
+    private static Set<Account> getAccounts(UserDTO userDto) {
         Set<Account> accounts = new HashSet<>();
 
         if (userDto.getAccounts() != null) { // Check if accounts set is not null
@@ -106,9 +114,7 @@ public class UserService {
                 accounts.add(newAccount);
             }
         }
-        user.setAccounts(accounts);
-
-        return user;
+        return accounts;
     }
 
 
@@ -197,14 +203,16 @@ public class UserService {
 
 
     // delete user -- admin only
-    public boolean deleteUser(Long userId, User adminUser) throws UnauthorizedException{
+    public boolean deleteUser(Long userId, UserDTO adminUserDto) throws UnauthorizedException{
         // Validate admin user
+        User adminUser = convertToEntity(adminUserDto);
         validateUser(adminUser);
-
+        logger.info(adminUser.toString());
         // Authenticate admin user
-        User foundAdminUser = userRepository.findById(adminUser.getUserId())
+        User foundAdminUser = userRepository.findByUsername(adminUser.getUsername())
                 .orElseThrow(() -> new UnauthorizedException("Unauthorized."));
-        if(foundAdminUser.getRole()!= UserRole.ADMIN){
+
+        if(foundAdminUser.getRole()!= UserRole.ADMIN && Objects.equals(adminUser.getPassword(), foundAdminUser.getPassword())){
             throw new UnauthorizedException("Restricted. Privileges Not Found");
         }
 

@@ -51,8 +51,8 @@ public class UserController {
 
 
     @DeleteMapping("/user/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody User adminUser){
-        boolean isDeleted = userService.deleteUser(userId, adminUser);
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody UserDTO adminUserDto){
+        boolean isDeleted = userService.deleteUser(userId, adminUserDto);
         if(!isDeleted)
             throw new NotFoundException("User with id " + userId + " was not found.");
 
