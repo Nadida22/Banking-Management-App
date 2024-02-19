@@ -2,7 +2,6 @@ package com.banking.BankingApp.controller;
 
 
 import com.banking.BankingApp.exception.NotFoundException;
-import com.banking.BankingApp.model.User;
 import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.service.UserService;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ public class UserController {
     private UserService userService;
 
 
-
+    // OK
     @PostMapping("/user")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDto){
             logger.info(userDto.toString());
@@ -32,7 +31,7 @@ public class UserController {
             return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-
+    // OK
     @GetMapping("/user")
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         List<UserDTO> response = userService.findAllUsers();
@@ -40,16 +39,14 @@ public class UserController {
     }
 
 
-
+    // OK
     @GetMapping("/user/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId){
         UserDTO response = userService.findByUserId(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
-
-
+    // OK
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody UserDTO adminUserDto){
         boolean isDeleted = userService.deleteUser(userId, adminUserDto);
@@ -60,14 +57,24 @@ public class UserController {
 
 
     }
-
+    // OK
     @PatchMapping("/user/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") Long userId, @RequestBody UserDTO userDto){
+    public ResponseEntity<UserDTO> updateUserPassword(@PathVariable("userId") Long userId, @RequestBody UserDTO userDto){
         userDto.setUserId(userId);
-        UserDTO response = userService.updateUserDetails(userDto);
+        UserDTO response = userService.updateUserPassword(userDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+
+//    @PatchMapping("/user/admin/{userId}")
+//    public ResponseEntity<UserDTO> updateUserDetails(@PathVariable("userId") Long userId, @RequestBody UserDTO userDto){
+//        userDto.setUserId(userId);
+//        UserDTO response = userService.updateUserPassword(userDto);
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//
+//    }
+
+
 
     // login
 

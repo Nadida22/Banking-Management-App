@@ -179,7 +179,7 @@ public class UserService {
 
 
     // update user credentials
-    public UserDTO updateUserDetails(UserDTO userDtoUpdates) throws NotFoundException{
+    public UserDTO updateUserPassword(UserDTO userDtoUpdates) throws NotFoundException{
         // Can update password.
         // Administrative approval will be needed for firstName and LastName
         User userUpdates = convertToEntity(userDtoUpdates);
@@ -208,13 +208,11 @@ public class UserService {
         User adminUser = convertToEntity(adminUserDto);
         validateUser(adminUser);
         logger.info(adminUser.toString());
-        // Authenticate admin user
-        User foundAdminUser = userRepository.findByUsername(adminUser.getUsername())
-                .orElseThrow(() -> new UnauthorizedException("Unauthorized."));
 
-        if(foundAdminUser.getRole()!= UserRole.ADMIN && Objects.equals(adminUser.getPassword(), foundAdminUser.getPassword())){
-            throw new UnauthorizedException("Restricted. Privileges Not Found");
-        }
+        // Authenticate admin user
+        boolean isAuthenticated = authenticateAdmin(adminUser);
+        if(!isAuthenticated)
+            throw new UnauthorizedException("Restricted. Access Denied.");
 
         // Check User exists. If so, then delete.
         return userRepository.findById(userId)
@@ -225,6 +223,22 @@ public class UserService {
 
 
     }
+
+    public boolean authenticateAdmin(User adminUser){
+        User foundAdminUser = userRepository.findByUsername(adminUser.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("Unauthorized."));
+        // check that password is valid.
+        return foundAdminUser.getRole() == UserRole.ADMIN && Objects.equals(adminUser.getPassword(), foundAdminUser.getPassword());
+    }
+
+    public boolean authenticateUser(User user){
+        User foundUser = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("Unauthorized."));
+        // check that password is valid.
+        return Objects.equals(user.getPassword(), foundUser.getPassword());
+    }
+
+
 
 
 

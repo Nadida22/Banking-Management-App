@@ -2,52 +2,56 @@ package com.banking.BankingApp.security;
 
 import com.banking.BankingApp.model.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 
-public class AppUserPrincipal implements UserDetails {
+public class BankUserDetails implements UserDetails {
 
-    private User user;
+   private final User user;
+
+   BankUserDetails(User user){
+       this.user = user;
+   }
 
 
-    public AppUserPrincipal(User user){
-        this.user = user;
-    }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+       return Collections.singletonList(new SimpleGrantedAuthority("ROLE: " + user.getRole()));
+
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return user.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

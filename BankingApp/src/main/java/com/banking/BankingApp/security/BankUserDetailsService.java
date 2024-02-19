@@ -3,23 +3,24 @@ package com.banking.BankingApp.security;
 import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.model.User;
 import com.banking.BankingApp.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AppUserDetailsService implements UserDetailsService {
+public class BankUserDetailsService implements UserDetailsService {
 
 
-
-    UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws NotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found."));
+        return new BankUserDetails(user);
 
-        return new AppUserPrincipal(user);
 
     }
 }
