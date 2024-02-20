@@ -36,7 +36,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
-    private Long recipientAccountId; // This can be null for non-transfer transactions
+    private Long recipientAccountNumber; // This can be null for non-transfer transactions
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,9 +50,7 @@ public class Transaction {
     public Transaction(TransactionType type, BigDecimal amount, LocalDateTime transactionDate, TransactionStatus status, Long recipientAccount, String description, Account account) {
         this.type = type;
         this.amount = amount;
-        this.transactionDate = transactionDate;
-        this.status = status;
-        this.recipientAccountId = recipientAccount;
+        this.recipientAccountNumber = recipientAccount;
         this.description = description;
         this.account = account;
     }
@@ -64,7 +62,7 @@ public class Transaction {
         this.amount = amount;
         this.transactionDate = transactionDate;
         this.status = status;
-        this.recipientAccountId = recipientAccount;
+        this.recipientAccountNumber = recipientAccount;
         this.description = description;
         this.account = account;
     }
@@ -90,8 +88,8 @@ public class Transaction {
         return status;
     }
 
-    public Long getRecipientAccountId() {
-        return recipientAccountId;
+    public Long getRecipientAccountNumber() {
+        return recipientAccountNumber;
     }
 
     public String getDescription() {
@@ -122,8 +120,8 @@ public class Transaction {
         this.status = status;
     }
 
-    public void setRecipientAccountId(Long recipientAccountId) {
-        this.recipientAccountId = recipientAccountId;
+    public void setRecipientAccountNumber(Long recipientAccountNumber) {
+        this.recipientAccountNumber = recipientAccountNumber;
     }
 
     public void setDescription(String description) {
@@ -147,7 +145,7 @@ public class Transaction {
         sanitizedTransaction.setAmount(transaction.getAmount());
         sanitizedTransaction.setTransactionDate(transaction.getTransactionDate());
         sanitizedTransaction.setStatus(transaction.getStatus());
-        sanitizedTransaction.setRecipientAccountId(transaction.getRecipientAccountId());
+        sanitizedTransaction.setRecipientAccountNumber(transaction.getRecipientAccountNumber());
         sanitizedTransaction.setDescription(transaction.getDescription());
         // account field not included to avoid exposing account details
 
@@ -162,12 +160,12 @@ public class Transaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-        return Objects.equals(transactionId, that.transactionId) && type == that.type && Objects.equals(amount, that.amount) && Objects.equals(transactionDate, that.transactionDate) && status == that.status && Objects.equals(recipientAccountId, that.recipientAccountId) && Objects.equals(description, that.description) && Objects.equals(account, that.account);
+        return Objects.equals(transactionId, that.transactionId) && type == that.type && Objects.equals(amount, that.amount) && Objects.equals(transactionDate, that.transactionDate) && status == that.status && Objects.equals(recipientAccountNumber, that.recipientAccountNumber) && Objects.equals(description, that.description) && Objects.equals(account, that.account);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(transactionId, type, amount, transactionDate, status, recipientAccountId, description, account);
+        return Objects.hash(transactionId, type, amount, transactionDate, status, recipientAccountNumber, description, account);
     }
 
     @Override
@@ -178,7 +176,7 @@ public class Transaction {
                 ", amount=" + amount +
                 ", transactionDate=" + transactionDate +
                 ", status=" + status +
-                ", recipientAccount=" + recipientAccountId +
+                ", recipientAccount=" + recipientAccountNumber +
                 ", description='" + description + '\'' +
                 ", account=" + account +
                 '}';

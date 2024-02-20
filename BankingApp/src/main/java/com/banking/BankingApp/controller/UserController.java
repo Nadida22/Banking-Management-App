@@ -1,6 +1,9 @@
 package com.banking.BankingApp.controller;
 import com.banking.BankingApp.exception.NotFoundException;
+import com.banking.BankingApp.model.dto.LoginDTO;
 import com.banking.BankingApp.model.dto.UserDTO;
+import com.banking.BankingApp.model.enums.UserRole;
+import com.banking.BankingApp.service.LoginService;
 import com.banking.BankingApp.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +18,15 @@ import java.util.List;
 public class UserController {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
+    private LoginService loginService;
 
     @Autowired
     private UserService userService;
+
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
     // OK
@@ -31,7 +39,9 @@ public class UserController {
 
     // OK
     @GetMapping("/user")
-    public ResponseEntity<List<UserDTO>> getAllUsers(){
+    public ResponseEntity<List<UserDTO>> getAllUsers(@RequestBody LoginDTO loginDto){
+        // Admin endpoint
+        loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.ADMIN);
         List<UserDTO> response = userService.findAllUsers();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -39,15 +49,18 @@ public class UserController {
 
     // OK
     @GetMapping("/user/{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId){
-        UserDTO response = userService.findByUserId(userId);
+    public ResponseEntity<UserDTO> findUserById(@PathVariable Long userId, @RequestBody LoginDTO loginDto){
+        loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.ADMIN);
+        UserDTO response = userService.findByUserId(loginDto.getUsername(), userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // OK
     @DeleteMapping("/user/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody UserDTO adminUserDto){
-        boolean isDeleted = userService.deleteUser(userId, adminUserDto);
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody LoginDTO loginUserDto){
+        // Admin endpoint
+        loginService.authenticateUser(loginUserDto.getUsername(), loginUserDto.getPassword(), UserRole.ADMIN);
+        boolean isDeleted = userService.deleteUser(userId);
         if(!isDeleted)
             throw new NotFoundException("User with id " + userId + " was not found.");
 
@@ -64,17 +77,26 @@ public class UserController {
 
     }
 
-//    @PatchMapping("/user/admin/{userId}")
-//    public ResponseEntity<UserDTO> updateUserDetails(@PathVariable("userId") Long userId, @RequestBody UserDTO userDto){
-//        userDto.setUserId(userId);
-//        UserDTO response = userService.updateUserPassword(userDto);
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//
-//    }
+
+    // OK
+    @PatchMapping("/user/admin/{userId}")
+    public ResponseEntity<UserDTO> updateUserDetails(@PathVariable("userId") Long userId, @RequestBody LoginDTO<UserDTO> loginUserDto){
+        // Admin endpoint
+        loginService.authenticateUser(loginUserDto.getUsername(), loginUserDto.getPassword(), UserRole.ADMIN);
+        UserDTO userDto = loginUserDto.getData();
+        userDto.setUserId(userId);
+        UserDTO response = userService.updateUserDetails(userDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
 
 
 
-    // login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
+        loginService.authenticateUser(loginDTO.getUsername(), loginDTO.getPassword(), UserRole.USER);
+        return new ResponseEntity<>("{\"message\":\"Successfully Logged In\"}", HttpStatus.OK);
+    }
 
 
 

@@ -169,19 +169,18 @@ public class UserService {
     }
 
 
-    public UserDTO findByUserId(Long userId) throws NotFoundException {
+    public UserDTO findByUserId(String username, Long userId) throws NotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User Account with id: " + userId + " Not Found."));
+        if(!userId.equals(user.getUserId()) && user.getRole() == UserRole.USER){
+            throw new UnauthorizedException("Cannot retrieve other user's credentials. Privileges Not Found.");
+        }
         return convertToDTO(user);
     }
 
 
-
-
-    // update user credentials
-    public UserDTO updateUserPassword(UserDTO userDtoUpdates) throws NotFoundException{
-        // Can update password.
-        // Administrative approval will be needed for firstName and LastName
+    public UserDTO updateUserDetails(UserDTO userDtoUpdates){
+        // Administrative approval needed
         User userUpdates = convertToEntity(userDtoUpdates);
         validateUser(userUpdates);
         User existingUser = userRepository.findById(userUpdates.getUserId())
@@ -191,30 +190,50 @@ public class UserService {
             existingUser.setPassword(userUpdates.getPassword());
         }
 
-        // TODO: add to separate endpoint. This should require administrative approval.
         if(userUpdates.getRole() != null){
             existingUser.setRole(userUpdates.getRole());
         }
+        if(userUpdates.getUsername() != null){
+            existingUser.setUsername(userUpdates.getUsername());
+        }
+        if(userUpdates.getFirstName() != null){
+            existingUser.setFirstName(userUpdates.getFirstName());
+        }
+        if(userUpdates.getLastName() != null){
+            existingUser.setLastName(userUpdates.getLastName());
+        }
+        if(userUpdates.getEmail() != null){
+            existingUser.setEmail(userUpdates.getEmail());
+        }
 
 
+        userRepository.save(existingUser);
+        return convertToDTO(existingUser);
+
+    }
+
+
+
+
+    // update user credentials
+    public UserDTO updateUserPassword(UserDTO userDtoUpdates) throws NotFoundException{
+        // Can update password.
+
+        User userUpdates = convertToEntity(userDtoUpdates);
+        validateUser(userUpdates);
+        User existingUser = userRepository.findById(userUpdates.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not found."));
+
+        if(userUpdates.getPassword() != null){
+            existingUser.setPassword(userUpdates.getPassword());
+        }
         userRepository.save(existingUser);
         return convertToDTO(existingUser);
     }
 
 
     // delete user -- admin only
-    public boolean deleteUser(Long userId, UserDTO adminUserDto) throws UnauthorizedException{
-        // Validate admin user
-        User adminUser = convertToEntity(adminUserDto);
-        validateUser(adminUser);
-        logger.info(adminUser.toString());
-
-        // Authenticate admin user
-        boolean isAuthenticated = authenticateAdmin(adminUser);
-        if(!isAuthenticated)
-            throw new UnauthorizedException("Restricted. Access Denied.");
-
-        // Check User exists. If so, then delete.
+    public boolean deleteUser(Long userId) throws UnauthorizedException{
         return userRepository.findById(userId)
                 .map(user -> {
                     userRepository.deleteById(userId);
@@ -224,19 +243,6 @@ public class UserService {
 
     }
 
-    public boolean authenticateAdmin(User adminUser){
-        User foundAdminUser = userRepository.findByUsername(adminUser.getUsername())
-                .orElseThrow(() -> new UnauthorizedException("Unauthorized."));
-        // check that password is valid.
-        return foundAdminUser.getRole() == UserRole.ADMIN && Objects.equals(adminUser.getPassword(), foundAdminUser.getPassword());
-    }
-
-    public boolean authenticateUser(User user){
-        User foundUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new UnauthorizedException("Unauthorized."));
-        // check that password is valid.
-        return Objects.equals(user.getPassword(), foundUser.getPassword());
-    }
 
 
 

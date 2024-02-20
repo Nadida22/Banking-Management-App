@@ -7,9 +7,7 @@ import com.banking.BankingApp.exception.UnauthorizedException;
 import com.banking.BankingApp.model.Account;
 import com.banking.BankingApp.model.User;
 import com.banking.BankingApp.model.dto.AccountDTO;
-import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.model.enums.AccountType;
-import com.banking.BankingApp.model.enums.UserRole;
 import com.banking.BankingApp.repository.AccountRepository;
 import com.banking.BankingApp.repository.UserRepository;
 import com.banking.BankingApp.validator.AccountValidator;
@@ -23,7 +21,6 @@ import org.springframework.validation.Errors;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,6 +35,9 @@ public class AccountService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    LoginService loginService;
 
 
     @Autowired
@@ -149,10 +149,19 @@ public class AccountService {
 
 
     // retrieve Account (and balance details, other fields,  etc.)
-    public AccountDTO findByAccountId(Long accountId) throws NotFoundException {
-        // condensed the logic
+    public AccountDTO findByAccountId(Long accountId, String activeUserName) throws NotFoundException {
+
+        User activeUser = userRepository.findByUsername(activeUserName)
+                .orElseThrow(() -> new NotFoundException("User not found."));
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundException("There is no Account attached with " + accountId));
+        logger.info(activeUser.getRole().toString());
+        logger.info(activeUser.getUserId().toString());
+        logger.info(account.getUser().getUserId().toString());
+
+        loginService.checkPrivileges(account.getUser().getUserId(), activeUser);
+
+
         return convertToDTO(account);
     }
 
@@ -169,18 +178,7 @@ public class AccountService {
 
 
     // delete account -- admin only
-    public boolean deleteAccount(Long accountId, UserDTO adminUserDto) throws UnauthorizedException {
-        // Validate admin user
-        User adminUser = userService.convertToEntity(adminUserDto);
-        validateUser(adminUser);
-        logger.info(adminUser.toString());
-
-        // Authenticate admin user
-        boolean isAuthenticated = userService.authenticateAdmin(adminUser);
-        if(!isAuthenticated)
-            throw new UnauthorizedException("Restricted. Privileges Not Found");
-
-        // Check User exists. If so, then delete.
+    public boolean deleteAccount(Long accountId) throws UnauthorizedException {
         return accountRepository.findById(accountId)
                 .map(user -> {
                     userRepository.deleteById(accountId);
@@ -193,26 +191,26 @@ public class AccountService {
 
 
     // retrieve all accounts for a user
-    public List<AccountDTO> findAccountsByUserId(Long userId, UserDTO userDto) throws UnauthorizedException, NotFoundException{
+    public List<AccountDTO> findAllAccountsByUserId(Long userId, String activeUserName) throws UnauthorizedException, NotFoundException{
+        User activeUser = userRepository.findByUsername(activeUserName)
+        .orElseThrow(() -> new NotFoundException("User not found."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+        logger.info(activeUser.getRole().toString());
 
-        // does user exist in database? Is password correct?
-        boolean isAuthenticated = userService.authenticateUser(user);
-        if(!isAuthenticated)
-            throw new UnauthorizedException("Access Denied. Password or username not valid.");
         // if role is USER, userId must be their own.  Cannot grab user ids for other accounts unless admin.
-        if(!Objects.equals(userId, user.getUserId()) && user.getRole() != UserRole.ADMIN){
-            throw new UnauthorizedException("Access Denied. You do not have correct Privileges to view Accounts for User Id: " + userId);
-        }
+        loginService.checkPrivileges(userId, activeUser);
         return accountRepository.findAccountsByUser(user).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
 
-    public BigDecimal findTotalBalance(Long userId, UserDTO userDto){
-      List<AccountDTO> accounts = findAccountsByUserId(userId, userDto);
+
+
+
+    public BigDecimal findTotalBalance(Long userId, String username){
+      List<AccountDTO> accounts = findAllAccountsByUserId(userId, username);
       BigDecimal balance = new BigDecimal(0);
       for(AccountDTO account: accounts){
           balance = balance.add(account.getBalance());

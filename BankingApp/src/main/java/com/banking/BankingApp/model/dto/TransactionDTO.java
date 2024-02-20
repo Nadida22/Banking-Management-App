@@ -13,7 +13,7 @@ public class TransactionDTO {
     private BigDecimal amount;
     private LocalDateTime transactionDate;
     private TransactionStatus status;
-    private Long recipientAccountId;
+    private Long recipientAccountNumber;
     private String description;
     // Instead of the whole Account object, you might want to include just the accountId or accountNumber
     private Long accountId;
@@ -25,9 +25,8 @@ public class TransactionDTO {
         this.transactionId = transactionId;
         this.type = type;
         this.amount = amount;
-        this.transactionDate = transactionDate;
         this.status = status;
-        this.recipientAccountId = recipientAccount;
+        this.recipientAccountNumber = recipientAccount;
         this.description = description;
         this.accountId = accountId;
     }
@@ -74,12 +73,12 @@ public class TransactionDTO {
         this.status = status;
     }
 
-    public Long getRecipientAccountId() {
-        return recipientAccountId;
+    public Long getRecipientAccountNumber() {
+        return recipientAccountNumber;
     }
 
-    public void setRecipientAccountId(Long recipientAccountId) {
-        this.recipientAccountId = recipientAccountId;
+    public void setRecipientAccountNumber(Long recipientAccountNumber) {
+        this.recipientAccountNumber = recipientAccountNumber;
     }
 
     public String getDescription() {
