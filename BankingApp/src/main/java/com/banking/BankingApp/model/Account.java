@@ -115,14 +115,16 @@ public class Account {
         this.transactions = transactions;
     }
 
-    public void addTransactionToList(Transaction transaction) {
+    public void addTransactionToSet(Transaction transaction) {
 
         this.transactions.add(transaction);
+        transaction.setAccount(this);
     }
 
-    public void removeTransactionFromList(Transaction transaction) {
+    public void removeTransactionFromSet(Transaction transaction) {
 
         this.transactions.remove(transaction);
+        transaction.setAccount(null);
     }
 
 

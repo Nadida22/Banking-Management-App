@@ -31,14 +31,25 @@ public class AccountDTO {
         this.userId = userId;
     }
 
-
-
     public AccountDTO(Long accountId, AccountType accountType, Long accountNumber, BigDecimal balance, Long userId) {
         this.accountId = accountId;
         this.accountType = accountType;
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.userId = userId;
+
+    }
+
+
+
+
+    public AccountDTO(Long accountId, AccountType accountType, Long accountNumber, BigDecimal balance, Long userId, Set<TransactionDTO> transactions) {
+        this.accountId = accountId;
+        this.accountType = accountType;
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.userId = userId;
+        this.transactions = transactions;
     }
 
 

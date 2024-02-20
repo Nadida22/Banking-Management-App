@@ -5,8 +5,11 @@ import com.banking.BankingApp.exception.InvalidUserException;
 import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.exception.UnauthorizedException;
 import com.banking.BankingApp.model.Account;
+import com.banking.BankingApp.model.Transaction;
 import com.banking.BankingApp.model.User;
 import com.banking.BankingApp.model.dto.AccountDTO;
+import com.banking.BankingApp.model.dto.TransactionDTO;
+import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.model.enums.AccountType;
 import com.banking.BankingApp.repository.AccountRepository;
 import com.banking.BankingApp.repository.UserRepository;
@@ -20,8 +23,10 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,36 +60,80 @@ public class AccountService {
 
 
     public AccountDTO convertToDTO(Account account) {
+        Set<TransactionDTO> transactions = new HashSet<>();
         AccountDTO accountDto = new AccountDTO();
         accountDto.setAccountId(account.getAccountId());
         accountDto.setAccountType(account.getAccountType());
         accountDto.setAccountNumber(account.getAccountNumber());
         accountDto.setBalance(account.getBalance());
-
         if (account.getUser() != null) {
             accountDto.setUserId(account.getUser().getUserId());
         }
         // handle transaction DTOs
+        if(account.getTransactions() != null){
+
+
+            for(Transaction transaction: account.getTransactions()){
+                TransactionDTO transactionDto = new TransactionDTO();
+                transactionDto.setTransactionId(transaction.getTransactionId());
+                transactionDto.setType(transaction.getType());
+                transactionDto.setTransactionDate(transaction.getTransactionDate());
+                transactionDto.setAmount(transaction.getAmount());
+                transactionDto.setRecipientAccountNumber(transaction.getRecipientAccountNumber());
+                transactionDto.setDescription(transaction.getDescription());
+                transactionDto.setAccountId(transaction.getAccount().getAccountId());
+                transactionDto.setStatus(transaction.getStatus());
+                transactions.add(transactionDto);
+
+                logger.info(account.getTransactions().toString());
+    }
+            accountDto.setTransactions(transactions);
+
+        }
         return accountDto;
 
     }
 
 
-    public Account convertToEntity(AccountDTO accountDTO) {
+    public Account convertToEntity(AccountDTO accountDto) {
         Account account = new Account();
-        account.setAccountId(accountDTO.getAccountId());
-        account.setAccountType(accountDTO.getAccountType());
-        account.setAccountNumber(accountDTO.getAccountNumber());
-        account.setBalance(accountDTO.getBalance());
+        account.setAccountId(accountDto.getAccountId());
+        account.setAccountType(accountDto.getAccountType());
+        account.setAccountNumber(accountDto.getAccountNumber());
+        account.setBalance(accountDto.getBalance());
+        Set<Transaction> transactions = getTransactions(accountDto);
 
-        if (accountDTO.getUserId() != null) {
-            User user = userRepository.findById(accountDTO.getUserId())
+        if (accountDto.getUserId() != null) {
+            User user = userRepository.findById(accountDto.getUserId())
                     .orElseThrow(() -> new NotFoundException("User not found"));
             account.setUser(user);
         }
 
         return account;
     }
+
+    private static Set<Transaction> getTransactions(AccountDTO accountDto) {
+        Set<Transaction> transactions = new HashSet<>();
+
+
+        if (accountDto.getTransactions() != null) { // Check if accounts set is not null
+            for (TransactionDTO transactionDto : accountDto.getTransactions()) {
+                Transaction newTransaction = new Transaction(
+                        transactionDto.getTransactionId(),
+                        transactionDto.getType(),
+                        transactionDto.getAmount(),
+                        transactionDto.getTransactionDate(),
+                        transactionDto.getStatus(),
+                        transactionDto.getRecipientAccountNumber(),
+                        transactionDto.getDescription());
+
+                transactions.add(newTransaction);
+            }
+        }
+        return transactions;
+    }
+
+
 
 
     // Checking for Valid account

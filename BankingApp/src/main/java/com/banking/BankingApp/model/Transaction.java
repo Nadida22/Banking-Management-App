@@ -67,6 +67,17 @@ public class Transaction {
         this.account = account;
     }
 
+    public Transaction(Long transactionId, TransactionType type, BigDecimal amount, LocalDateTime transactionDate, TransactionStatus status, Long recipientAccount, String description) {
+        this.transactionId = transactionId;
+        this.type = type;
+        this.amount = amount;
+        this.transactionDate = transactionDate;
+        this.status = status;
+        this.recipientAccountNumber = recipientAccount;
+        this.description = description;
+
+    }
+
 
     public Long getTransactionId() {
         return transactionId;
