@@ -1,6 +1,4 @@
 package com.banking.BankingApp.model.dto;
-
-import com.banking.BankingApp.model.Transaction;
 import com.banking.BankingApp.model.enums.AccountType;
 
 import java.math.BigDecimal;

@@ -9,7 +9,6 @@ import com.banking.BankingApp.model.Transaction;
 import com.banking.BankingApp.model.User;
 import com.banking.BankingApp.model.dto.AccountDTO;
 import com.banking.BankingApp.model.dto.TransactionDTO;
-import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.model.enums.AccountType;
 import com.banking.BankingApp.repository.AccountRepository;
 import com.banking.BankingApp.repository.UserRepository;
