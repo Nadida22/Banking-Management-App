@@ -1,6 +1,4 @@
 package com.banking.BankingApp.controller;
-
-
 import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.service.UserService;
