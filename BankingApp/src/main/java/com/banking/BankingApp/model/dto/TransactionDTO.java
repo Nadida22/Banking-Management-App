@@ -21,7 +21,7 @@ public class TransactionDTO {
     public TransactionDTO() {
     }
 
-    public TransactionDTO(Long transactionId, TransactionType type, BigDecimal amount, LocalDateTime transactionDate, TransactionStatus status, Long recipientAccount, String description, Long accountId) {
+    public TransactionDTO(Long transactionId, BigDecimal amount, TransactionType type, TransactionStatus status, Long recipientAccount, String description, Long accountId) {
         this.transactionId = transactionId;
         this.type = type;
         this.amount = amount;

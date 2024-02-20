@@ -2,12 +2,16 @@ package com.banking.BankingApp.service;
 
 import com.banking.BankingApp.exception.InvalidTransactionException;
 import com.banking.BankingApp.exception.NotFoundException;
+import com.banking.BankingApp.exception.UnauthorizedException;
 import com.banking.BankingApp.model.Account;
 import com.banking.BankingApp.model.Transaction;
 import com.banking.BankingApp.model.User;
+import com.banking.BankingApp.model.dto.AccountDTO;
 import com.banking.BankingApp.model.dto.TransactionDTO;
+import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.model.enums.TransactionStatus;
 import com.banking.BankingApp.model.enums.TransactionType;
+import com.banking.BankingApp.model.enums.UserRole;
 import com.banking.BankingApp.repository.AccountRepository;
 import com.banking.BankingApp.repository.TransactionRepository;
 import com.banking.BankingApp.repository.UserRepository;
@@ -20,7 +24,9 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -168,7 +174,7 @@ public class TransactionService {
         BigDecimal recipientOldBalance = recipientAccount.getBalance();
         BigDecimal recipientNewBalance = recipientOldBalance.add(transaction.getAmount());
 
-        Transaction recipientTransaction = createRecipientTransaction(transaction, recipientAccount);
+        createRecipientTransaction(transaction, recipientAccount);
 
         originalAccount.setBalance(newOriginalBalance);
         recipientAccount.setBalance(recipientNewBalance);
@@ -182,7 +188,7 @@ public class TransactionService {
 
 
 
-    public Transaction createRecipientTransaction(Transaction transaction, Account recipientAccount){
+    public void createRecipientTransaction(Transaction transaction, Account recipientAccount){
         Transaction recipientTransaction = new Transaction();
         recipientTransaction.setAccount(recipientAccount);
         recipientTransaction.setAmount(transaction.getAmount());
@@ -192,7 +198,6 @@ public class TransactionService {
         recipientTransaction.setType(transaction.getType());
         recipientTransaction.setStatus(TransactionStatus.COMPLETED);
         transactionRepository.save(recipientTransaction);
-        return recipientTransaction;
 
     }
 
@@ -204,14 +209,91 @@ public class TransactionService {
     }
 
 
+    public List<User> manageUsers(Long accountId, String activeUsername){
+        User activeUser = userRepository.findByUsername(activeUsername)
+                .orElseThrow(() -> new NotFoundException("User not found."));
 
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("Account not found."));
+
+        logger.info(activeUser.getRole().toString());
+        List<User> users = new ArrayList<>();
+
+        users.add(activeUser);
+        users.add(account.getUser());
+
+        // Find user of account
+        return users;
+
+    }
 
     // get all transactions for account
+    public List<TransactionDTO> findTransactionsByAccountId(Long accountId, String activeUserName) throws UnauthorizedException, NotFoundException{
+
+        List<User> users = manageUsers(accountId, activeUserName);
+        User activeUser = users.get(0);
+        User user = users.get(1);
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("Account not found."));
+
+        // if role is USER, userId must be their own.  Cannot grab user ids for other accounts unless admin.
+        loginService.checkPrivileges(user.getUserId(), activeUser);
+        return transactionRepository.findTransactionsByAccount(account).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    public TransactionDTO findByTransactionId(Long transactionId, String activeUsername) throws NotFoundException {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new NotFoundException("User Account with id: " + transactionId + " Not Found."));
+        return convertToDTO(transaction);
+    }
 
 
 
 
-    // get all transactions for account by type, date, or amount
+    // get all transactions for account by type
+    public List<TransactionDTO> findTransactionsByAccountIdAndType(Long accountId, String activeUsername, TransactionType transactionType) throws UnauthorizedException, NotFoundException{
+        List<User> users = manageUsers(accountId, activeUsername);
+        User activeUser = users.get(0);
+        User user = users.get(1);
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("Account not found."));
+
+        loginService.checkPrivileges(user.getUserId(), activeUser);
+        return transactionRepository.findTransactionsByAccountAndType(account, transactionType).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+
+
+    }
+
+    // get all transactions for account by date
+    public List<TransactionDTO> findTransactionsByAccountIdAndDate(Long accountId, String activeUserName, LocalDate startDate, LocalDate endDate) throws UnauthorizedException, NotFoundException {
+        List<User> users = manageUsers(accountId, activeUserName);
+        User activeUser = users.get(0);
+        User user = users.get(1);
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("Account not found."));
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+
+        LocalDateTime endDateTime = endDate.atStartOfDay();
+
+        loginService.checkPrivileges(user.getUserId(), activeUser);
+        return transactionRepository.findTransactionsByAccountAndDateRange(account, startDateTime, endDateTime).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+
+
+    }
+
 
 
 
