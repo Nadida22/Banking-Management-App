@@ -1,14 +1,15 @@
-let username = document.getElementById("username").value;
-let passwordInput = document.getElementById("password").value;
+
 let form = document.getElementById("contactForm");
 
 
 form.addEventListener("submit",(e) => {
     e.preventDefault();
-    e.userLogin();
+    userLogin();
 });
 
 async function userLogin() {
+    let username = document.getElementById("username").value;
+    let passwordInput = document.getElementById("password").value;
     try {
         let response = await fetch(`http://localhost:8080/login`, {
             method: "POST",
@@ -22,6 +23,7 @@ async function userLogin() {
         })
         let data = await response.json();
         console.log(data);
+        window.location.href = './useraccount.html'
 
     } catch(e) {
         console.error("Incorrect username/password" + e);
