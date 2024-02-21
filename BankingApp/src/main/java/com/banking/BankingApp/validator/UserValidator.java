@@ -30,11 +30,11 @@ public class UserValidator implements Validator {
         }
 
         // Validate email
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
-            errors.rejectValue("email", "email.empty", "Email cannot be empty");
-        } else if (!user.getEmail().contains("@")) {
-            errors.rejectValue("email", "email.invalid", "Email is invalid");
-        }
+//        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+//            errors.rejectValue("email", "email.empty", "Email cannot be empty");
+//        } else if (!user.getEmail().contains("@")) {
+//            errors.rejectValue("email", "email.invalid", "Email is invalid");
+//        }
 
         // Validate firstName
         if (user.getFirstName() == null || user.getFirstName().isEmpty()) {

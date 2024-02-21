@@ -4,8 +4,8 @@ let form = document.getElementById("contactForm");
 
 
 form.addEventListener("submit",(e) => {
-    e.preventDefault();
-    e.userLogin();
+    preventDefault();
+    userLogin();
 });
 
 async function userLogin() {
