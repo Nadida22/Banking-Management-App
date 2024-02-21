@@ -43,7 +43,7 @@ public class TransactionController {
     }
 
     @GetMapping("/transaction/{accountId}")
-    public ResponseEntity<List<TransactionDTO>> findAllTransactionByAccountId(@PathVariable Long accountId, @RequestBody LoginDTO<?> loginDto){
+    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountId(@PathVariable Long accountId, @RequestBody LoginDTO<?> loginDto){
         loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
         List<TransactionDTO> response = transactionService.findTransactionsByAccountId(accountId, loginDto.getUsername());
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -51,7 +51,7 @@ public class TransactionController {
 
 
     @GetMapping("/transaction/{accountId}/{type}")
-    public ResponseEntity<List<TransactionDTO>> findAllTransactionByAccountIdAndType(@PathVariable Long accountId, @PathVariable String type, @RequestBody LoginDTO<?> loginDto){
+    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountIdAndType(@PathVariable Long accountId, @PathVariable String type, @RequestBody LoginDTO<?> loginDto){
         TransactionType transactionType = TransactionType.valueOf(type.toUpperCase());
         loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
         List<TransactionDTO> response = transactionService.findTransactionsByAccountIdAndType(accountId, loginDto.getUsername(), transactionType);
@@ -70,7 +70,7 @@ public class TransactionController {
 
 
     @GetMapping("/transaction/{accountId}/filterByDate")
-    public ResponseEntity<List<TransactionDTO>> findAllTransactionByAccountIdAndDate(@PathVariable Long accountId, @RequestBody LoginDTO<TransactionDatesDTO> loginDatesDTO){
+    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountIdAndDate(@PathVariable Long accountId, @RequestBody LoginDTO<TransactionDatesDTO> loginDatesDTO){
         loginService.authenticateUser(loginDatesDTO.getUsername(), loginDatesDTO.getPassword(), UserRole.USER);
         TransactionDatesDTO dates = loginDatesDTO.getData();
         List<TransactionDTO> response = transactionService.findTransactionsByAccountIdAndDate(accountId, loginDatesDTO.getUsername(), dates.getStartDate(), dates.getEndDate());
