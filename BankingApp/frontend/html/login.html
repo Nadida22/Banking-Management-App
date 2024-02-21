@@ -39,36 +39,27 @@
                     <!-- Login form-->
                     <div class="bg-light rounded-4 py-5 px-4 px-md-5">
                         <div class="text-center mb-5">
-                            <h1 class="fw-bolder">Log In</h1>
+                            <h1 class="fw-bolder"></h1>
                         </div>
                         <div class="row gx-5 justify-content-center">
                             <div class="col-lg-8 col-xl-6">
                                 <form id="contactForm" data-sb-form-api-token="API_TOKEN">
-                                    <!-- Email address input-->
+                                    <!-- Username input-->
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" id="email" type="email" placeholder="name@example.com" data-sb-validations="required,email" />
-                                        <label for="email">Email address</label>
-                                        <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
-                                        <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
+                                        <input class="form-control" id="username" type="text" placeholder="username.." />
+                                        <label for="username">Username</label>
                                     </div>
-                                    <!-- password input-->
+                                    <!-- Password input-->
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" id="password" type="text" placeholder="pass..." data-sb-validations="required" />
+                                        <input class="form-control" id="password" type="text" placeholder="pasword.." />
                                         <label for="password">Password</label>
-                                        <div class="invalid-feedback" data-sb-feedback="password:required">A password is required.</div>
                                     </div>
-                                    <!-- Message input-->
-                                    <div class="d-none" id="submitSuccessMessage">
-                                        <div class="text-center mb-3">
-                                            <div class="fw-bolder"></div>
-                                            <br />
-                                        </div>
-                                    </div>
-                                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
-                                    <!-- Submit Button-->
-                                    <div class="d-grid"><button class="btn btn-primary btn-lg disabled" id="submitButton" type="submit">Log In</button></div>
-                                                                        <!--Sign Up Link-->
-                                                                        <div>Don't have an account?<a href="./signup.html">Sign up here</a></div>
+                                <div class="d-grid">
+                                    <button id="submitButton" type="submit" class="btn btn-primary">Log In</button>
+                                </div>
+                                <div>
+                                    <p style="text-align: center;">Don't have an account? <a href="./signup.html">Sign up</a></p>
+                                </div>
                                 </form>
                             </div>
                         </div>

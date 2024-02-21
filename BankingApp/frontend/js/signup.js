@@ -1,25 +1,41 @@
-let userName = document.getElementById("name");
-let userEmail = document.getElementById("email");
-let userPassword = document.getElementById("password");
-let button = document.getElementById("submitButton");
-let form = document.getElementById("contactForm")
+let firstName = document.getElementById("firstname").value;
+let lastName = document.getElementById("lastname").value;
+let userName = document.getElementById("username").value;
+let userEmail = document.getElementById("email").value;
+let userPassword = document.getElementById("password").value;
+let isAdmin = document.getElementById("adminUser").value;
+let form = document.getElementById("contactForm");
+let text = document.getElementById("account-created");
 
 
-button.addEventListener("click", registerUser);
 
-function registerUser(e) {
-    let formData = JSON.parse(localStorage.getItem("formData")) || [];
-    let user = {
-        name: userName.value,
-        email: userEmail.value,
-        password: userPassword.value
-    };
-        formData.push(user);
-        localStorage.setItem("formData", JSON.stringify(formData));
-        console.log("Account Created!")
-        let p  = document.createElement("p");
-        let nextStep = document.getElementById("submitSuccessMessage");
-        nextStep.appendChild(p);
-        nextStep.innerHTML = "Account created! Please log in " 
+form.addEventListener("submit", (e) =>{
     e.preventDefault();
+    registerUser();
+});
+
+async function registerUser() {
+    try {
+        let response = await fetch(`http://localhost:8080/user`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                role: !!isAdmin,
+                firstName: firstName,
+                lastName: lastName,
+                username: userName,
+                email: userEmail,
+                password: userPassword
+            })
+        })
+        let data = await response.json();
+        console.log(data);
+        text.innerHTML = "Account Created!"
+    } catch(e) {
+        console.error(e);
+        text.innerHTML = "Please try again."
+    }
 }
+
