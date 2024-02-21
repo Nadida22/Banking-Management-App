@@ -34,10 +34,7 @@ public class AccountController {
     }
 
 
-    @RequestMapping("/account-portal")
-    public String redirectToStaticPage(){
-        return "redirect:/html/account.html";
-    }
+
 
 
 

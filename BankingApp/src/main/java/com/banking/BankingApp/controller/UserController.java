@@ -30,6 +30,11 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
+    @RequestMapping("/usersignup")
+    public String redirectToStaticPage(){
+        return "redirect:/html/signup.html";
+    }
+
     // OK
     @PostMapping("/user")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDto){

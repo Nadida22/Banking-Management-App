@@ -33,8 +33,7 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    AccountRepository accountRepository;
+
 
     @Autowired
     UserValidator userValidator;
@@ -49,7 +48,6 @@ public class UserService {
         UserDTO userDto = new UserDTO();
         userDto.setUserId(user.getUserId());
         userDto.setRole(user.getRole());
-        userDto.setPassword(user.getPassword());
         userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setFirstName(user.getFirstName());
@@ -96,6 +94,8 @@ public class UserService {
         user.setLastName(userDto.getLastName());
         Set<Account> accounts = getAccounts(userDto);
         user.setAccounts(accounts);
+
+        logger.info(user.getPassword());
 
         return user;
     }
@@ -161,12 +161,6 @@ public class UserService {
     }
 
 
-
-    //  login
-    public User loginUser(User user){
-
-        return user;
-    }
 
 
     public UserDTO findByUserId(String username, Long userId) throws NotFoundException {
