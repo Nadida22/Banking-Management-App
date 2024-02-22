@@ -197,9 +197,9 @@ public class AccountService {
 
 
     // retrieve Account (and balance details, other fields,  etc.)
-    public AccountDTO findByAccountId(Long accountId, String activeUserName) throws NotFoundException {
+    public AccountDTO findByAccountId(Long accountId, String activeUsername) throws NotFoundException {
 
-        User activeUser = userRepository.findByUsername(activeUserName)
+        User activeUser = userRepository.findByUsername(activeUsername)
                 .orElseThrow(() -> new NotFoundException("User not found."));
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundException("There is no Account attached with " + accountId));

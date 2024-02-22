@@ -1,6 +1,8 @@
 package com.banking.BankingApp.controller;
+import com.banking.BankingApp.exception.InvalidAccountException;
 import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.model.dto.LoginDTO;
+import com.banking.BankingApp.model.dto.TokenDTO;
 import com.banking.BankingApp.model.dto.UserDTO;
 import com.banking.BankingApp.model.enums.UserRole;
 import com.banking.BankingApp.service.LoginService;
@@ -44,9 +46,10 @@ public class UserController {
 
     // OK
     @GetMapping("/user")
-    public ResponseEntity<List<UserDTO>> getAllUsers(@RequestBody LoginDTO<?> loginDto){
+    public ResponseEntity<List<UserDTO>> getAllUsers(@RequestBody TokenDTO<?> tokenDto){
         // Admin endpoint
-        loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.ADMIN);
+        UserRole requiredRole = UserRole.ADMIN;
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
         List<UserDTO> response = userService.findAllUsers();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -54,26 +57,31 @@ public class UserController {
 
     // OK
     @GetMapping("/user/{userId}")
-    public ResponseEntity<UserDTO> findUserById(@PathVariable Long userId, @RequestBody LoginDTO<?> loginDto){
-        loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.ADMIN);
-        UserDTO response = userService.findByUserId(loginDto.getUsername(), userId);
+    public ResponseEntity<UserDTO> findUserById(@PathVariable Long userId, @RequestBody TokenDTO<?> tokenDto){
+        // admin
+        UserRole requiredRole = UserRole.USER;
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
+        if(tokenDto.getUsername() == null){
+            throw new InvalidAccountException("Username is Required.");
+        }
+        UserDTO response = userService.findByUserId(tokenDto.getUsername(), userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
     @PostMapping("/user/login")
-    public ResponseEntity<LoginDTO<?>> loginUser(@RequestBody LoginDTO<?> loginDto){
-        LoginDTO<?> response = loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
-        logger.info(loginDto.toString());
+    public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDto){
+        long response = loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
+        logger.info(String.valueOf(response));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
     // OK
     @DeleteMapping("/user/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody LoginDTO<?> loginUserDto){
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody TokenDTO<?> tokenDto){
         // Admin endpoint
-        loginService.authenticateUser(loginUserDto.getUsername(), loginUserDto.getPassword(), UserRole.ADMIN);
+        loginService.checkToken(tokenDto.getToken(), UserRole.ADMIN);
         boolean isDeleted = userService.deleteUser(userId);
         if(!isDeleted)
             throw new NotFoundException("User with id " + userId + " was not found.");
@@ -84,7 +92,10 @@ public class UserController {
     }
     // OK
     @PatchMapping("/user/{userId}")
-    public ResponseEntity<UserDTO> updateUserPassword(@PathVariable("userId") Long userId, @RequestBody UserDTO userDto){
+    public ResponseEntity<UserDTO> updateUserPassword(@PathVariable("userId") Long userId, @RequestBody TokenDTO<UserDTO> tokenDto){
+        UserRole requiredRole = UserRole.USER;
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
+        UserDTO userDto = tokenDto.getData();
         userDto.setUserId(userId);
         UserDTO response = userService.updateUserPassword(userDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -94,10 +105,11 @@ public class UserController {
 
     // OK
     @PatchMapping("/user/admin/{userId}")
-    public ResponseEntity<UserDTO> updateUserDetails(@PathVariable("userId") Long userId, @RequestBody LoginDTO<UserDTO> loginUserDto){
+    public ResponseEntity<UserDTO> updateUserDetails(@PathVariable("userId") Long userId, @RequestBody TokenDTO<UserDTO> tokenDto){
         // Admin endpoint
-        loginService.authenticateUser(loginUserDto.getUsername(), loginUserDto.getPassword(), UserRole.ADMIN);
-        UserDTO userDto = loginUserDto.getData();
+        UserRole requiredRole = UserRole.ADMIN;
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
+        UserDTO userDto = tokenDto.getData();
         userDto.setUserId(userId);
         UserDTO response = userService.updateUserDetails(userDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
