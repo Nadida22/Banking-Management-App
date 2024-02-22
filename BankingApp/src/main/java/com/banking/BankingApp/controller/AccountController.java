@@ -21,6 +21,9 @@ public class AccountController {
 
 
 
+
+
+
     private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
     @Autowired
@@ -34,10 +37,7 @@ public class AccountController {
     }
 
 
-    @RequestMapping("/accounts")
-    public String redirectToStaticPage(){
-        return "redirect:/html/signup.html";
-    }
+
 
 
     // OK
