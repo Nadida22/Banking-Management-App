@@ -14,8 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -61,18 +62,40 @@ public class UserController {
         // admin
         UserRole requiredRole = UserRole.USER;
         loginService.checkToken(tokenDto.getToken(), requiredRole);
+        UserDTO response = userService.findByUserId(userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/username")
+    public ResponseEntity<UserDTO> findUserByUsername(@RequestBody TokenDTO<?> tokenDto){
+        // admin
+        UserRole requiredRole = UserRole.USER;
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
         if(tokenDto.getUsername() == null){
             throw new InvalidAccountException("Username is Required.");
         }
-        UserDTO response = userService.findByUserId(tokenDto.getUsername(), userId);
+        UserDTO response = userService.findByUsername(tokenDto.getUsername());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
+
     @PostMapping("/user/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDto){
-        long response = loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
-        logger.info(String.valueOf(response));
+        long token = loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
+        logger.info(String.valueOf(token));
+
+
+
+        // create the json with the string
+        String response = "{"
+                + "\"token\":\"" + token + "\","
+                + "\"username\":\"" + loginDto.getUsername() + "\"}";
+
+
+
+
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

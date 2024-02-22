@@ -1,4 +1,14 @@
-function initialize
+(function() {
+    let token = sessionStorage.getItem("token");
+    let userame = sessionStorage.getItem("username");
+    console.log(`Token: ${token}`);
+    console.log(`Username: ${username}`)
+
+
+    // const response = await fetch()
+
+
+})
 
 
  async function registerUser(userData) {

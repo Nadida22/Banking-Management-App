@@ -10,9 +10,18 @@ async function handleFormSubmit(e) {
     try {
         const response = await loginUser(formData);
         const responseData = await response.json();
+        console.log(responseData)
+
+
         if(response.ok){
             console.log(responseData);
-         window.location.href = "/user-portal";
+            sessionStorage.setItem("token", responseData.token);
+            sessionStorage.setItem("username", responseData.username);
+         
+
+
+
+//         window.location.href = "/user-portal";
          }
 
 

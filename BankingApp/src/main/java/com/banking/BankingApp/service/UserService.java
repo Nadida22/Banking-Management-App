@@ -162,8 +162,20 @@ public class UserService {
 
 
 
+    public UserDTO findByUsername(String username) throws NotFoundException{
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User Account with id: " + username + " Not Found."));
+        if(!username.equals(user.getUsername()) && user.getRole() == UserRole.USER){
+            throw new UnauthorizedException("Cannot retrieve other user's credentials. Privileges Not Found.");
+        }
+        return convertToDTO(user);
 
-    public UserDTO findByUserId(String username, Long userId) throws NotFoundException {
+    }
+
+
+
+
+    public UserDTO findByUserId(Long userId) throws NotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User Account with id: " + userId + " Not Found."));
         if(!userId.equals(user.getUserId()) && user.getRole() == UserRole.USER){
