@@ -71,7 +71,7 @@ public class UserController {
 
     // OK
     @DeleteMapping("/user/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody LoginDTO loginUserDto){
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody LoginDTO<?> loginUserDto){
         // Admin endpoint
         loginService.authenticateUser(loginUserDto.getUsername(), loginUserDto.getPassword(), UserRole.ADMIN);
         boolean isDeleted = userService.deleteUser(userId);
