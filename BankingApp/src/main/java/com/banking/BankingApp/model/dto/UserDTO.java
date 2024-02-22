@@ -29,6 +29,30 @@ public class UserDTO {
         this.accounts = accounts;
     }
 
+    public UserDTO(UserRole role, String username, String email, String password, String firstName, String lastName, Set<AccountDTO> accounts) {
+        this.role = role;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.accounts = accounts;
+    }
+
+
+    public UserDTO(UserRole role, String username, String email, String firstName, String lastName, Set<AccountDTO> accounts) {
+        this.role = role;
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.accounts = accounts;
+    }
+
+
+
+
+
     public long getUserId() {
         return userId;
     }

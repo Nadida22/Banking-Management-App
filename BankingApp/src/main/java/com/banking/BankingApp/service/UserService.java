@@ -33,8 +33,7 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    AccountRepository accountRepository;
+
 
     @Autowired
     UserValidator userValidator;
@@ -49,7 +48,6 @@ public class UserService {
         UserDTO userDto = new UserDTO();
         userDto.setUserId(user.getUserId());
         userDto.setRole(user.getRole());
-        userDto.setPassword(user.getPassword());
         userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setFirstName(user.getFirstName());
@@ -96,6 +94,8 @@ public class UserService {
         user.setLastName(userDto.getLastName());
         Set<Account> accounts = getAccounts(userDto);
         user.setAccounts(accounts);
+
+        logger.info(user.getPassword());
 
         return user;
     }
@@ -162,14 +162,20 @@ public class UserService {
 
 
 
-    //  login
-    public User loginUser(User user){
+    public UserDTO findByUsername(String username) throws NotFoundException{
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User Account with id: " + username + " Not Found."));
+        if(!username.equals(user.getUsername()) && user.getRole() == UserRole.USER){
+            throw new UnauthorizedException("Cannot retrieve other user's credentials. Privileges Not Found.");
+        }
+        return convertToDTO(user);
 
-        return user;
     }
 
 
-    public UserDTO findByUserId(String username, Long userId) throws NotFoundException {
+
+
+    public UserDTO findByUserId(Long userId) throws NotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User Account with id: " + userId + " Not Found."));
         if(!userId.equals(user.getUserId()) && user.getRole() == UserRole.USER){

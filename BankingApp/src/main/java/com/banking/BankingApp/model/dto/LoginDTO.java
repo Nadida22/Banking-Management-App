@@ -1,18 +1,12 @@
 package com.banking.BankingApp.model.dto;
 
-public class LoginDTO<T> {
+public class LoginDTO {
 
-
-    private T data;
-    private String username;
-
-    private String password;
 
     public LoginDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }
-
 
     public String getUsername() {
         return username;
@@ -30,14 +24,8 @@ public class LoginDTO<T> {
         this.password = password;
     }
 
+    private String username;
 
-    public T getData(){
-        return data;
-    }
-
-    public void setData(T data){
-        this.data = data;
-    }
-
+    private String password;
 
 }
