@@ -12,7 +12,7 @@ logInButton.addEventListener("click", () => {
                 console.log("Incorrect username/password");
             }
         } else {
-            console.log("Incorrect usernaame/password");
+            console.log("Incorrect username/password");
         }
     }
 
