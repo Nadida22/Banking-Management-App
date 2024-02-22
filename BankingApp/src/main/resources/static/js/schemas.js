@@ -26,7 +26,7 @@ let loginSchema = {
 };
 
 let tokenSchema = {
-    token: "",
+    token: 1,
     username:"",
     data: ""
 };

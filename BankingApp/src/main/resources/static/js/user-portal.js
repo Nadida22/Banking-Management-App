@@ -1,32 +1,38 @@
 import { createToken, createUser} from './schemas.js';
 
 const url = `http://localhost:8080`;
-const activeToken = parseInt(sessionStorage.getItem("token"));
+const rawToken = sessionStorage.getItem("token").trim();
 const activeUsername = sessionStorage.getItem("username");
+let activeToken = parseInt(rawToken);
+
 
 (async () => {
-    console.log(`Token: ${activeToken}`);
-    console.log(`Username: ${activeUsername}`);
+    displayData();
+  })();
 
-    try {
-        let userResponse = await getUserData();
-        console.log(userResponse);
 
-        // Example usage of getBalance and getAccounts
-        // Assuming you have a userId to use
-        // let userId = 'someUserId';
-        // let balanceResponse = await getBalance(userId);
-        // let accountsResponse = await getAccounts(userId);
-    } catch (error) {
-        console.error('Error:', error);
-    }
-})();
+
+async function displayData(){
+    let userData = await getUserData();
+    let balanceData = await getBalance();
+    let userId = parseInt(userData.userId.trim());
+
+    let username = userData.username;
+ 
+
+    let balance = balanceData;
+    console.log(balance);
+
+   
+}
+
+
+
 
 async function getUserData() {
     // get User info
-    console.log(activeToken);
-    let userData = createToken(activeUsername, activeToken);
-    const usernameUrl = `http://localhost:8080/username`;
+    let userData = createToken({ username: activeUsername, token: activeToken });
+    const usernameUrl = `${url}/username`;
     const response = await fetch(usernameUrl, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
@@ -40,11 +46,11 @@ async function getUserData() {
 
 async function getBalance(userId) {
     // getBalance
-    let userData = new tokenSchema(activeUsername, activeToken);
+    let userData = createToken({ username: activeUsername, token: activeToken });
     const balanceUrl = `${url}/user/${userId}/balance`;
     const response = await fetch(balanceUrl, {
         method: 'POST',
-//        headers: { "Content-Type": "application/json" },
+       headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData)
     });
     if (!response.ok) {
@@ -55,11 +61,11 @@ async function getBalance(userId) {
 
 async function getAccounts(userId) {
     // getAccounts
-    let userData = new tokenSchema(activeUsername, activeToken);
+    let userData = createToken({ username: activeUsername, token: activeToken });
     const accountsUrl = `${url}/user/${userId}/account`;
     const response = await fetch(accountsUrl, {
         method: 'POST',
-//        headers: { "Content-Type": "application/json" },
+       headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData)
     });
     if (!response.ok) {
@@ -68,4 +74,3 @@ async function getAccounts(userId) {
     return response.json();
 }
 
-// Removed the incomplete and unused code
