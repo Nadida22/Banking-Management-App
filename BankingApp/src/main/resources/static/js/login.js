@@ -1,66 +1,56 @@
-import { loginSchema } from './schemas.js';
+import { createLogin } from './schemas.js';
 
-let form = document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
-
+document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
 
 async function handleFormSubmit(e) {
     e.preventDefault();
     const formData = getFormData();
-    console.log(formData);
+
     try {
         const response = await loginUser(formData);
-        const responseData = await response.json();
-        console.log(responseData)
 
+        if (response.ok) {
+            const responseData = await response.json();
 
-        if(response.ok){
-            console.log(responseData);
+            // Store token and username in sessionStorage.
             sessionStorage.setItem("token", responseData.token);
             sessionStorage.setItem("username", responseData.username);
-         
 
-
-
-//         window.location.href = "/user-portal";
-         }
-
-
+            window.location.href = "/user-portal";
+        } else {
+            // Handle HTTP errors
+            throw new Error('Failed to log in');
         }
-     catch (error) {
+    } catch (error) {
         console.error(error);
-        displayMessage("Account Not Created. Please Try Again");
+        displayMessage("Username or password is invalid. Please try again.");
     }
 }
 
-
 function getFormData() {
-    return {
-        ...loginSchema,
+    return createLogin({
         username: document.getElementById("username").value,
         password: document.getElementById("password").value
-    };
-
-
+    });
 }
 
 async function loginUser(userData) {
-    let loginUrl = `http://localhost:8080/user/login` ;
+    let loginUrl = `http://localhost:8080/user/login`;
     try {
         let response = await fetch(loginUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify (userData)
-        })
+            body: JSON.stringify(userData)
+        });
         return response;
-
-    } catch(e) {
-        console.error("Incorrect username or password" + e);
+    } catch (e) {
+        console.error("Login error: " + e.message);
+        throw e; // Re-throw the error to be caught by the caller
     }
 }
 
-
 function displayMessage(message) {
-    document.getElementById("account-created").innerHTML = message;
+    document.getElementById("signin-message").textContent = message;
 }

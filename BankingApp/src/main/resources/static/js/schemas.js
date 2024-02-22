@@ -1,36 +1,54 @@
-
-
 let userSchema = {
     username: "",
     password: "",
     email: "",
     firstName: "",
     lastName: "",
-    isAdmin: "USER"
-
-}
+    isAdmin: false // Assuming boolean value
+};
 
 let accountSchema = {
     accountType: "",
-    accountNumber: 0,
-    balance: null,
+    accountNumber: "", // or use a number if appropriate
+    balance: 0, // Assuming balance is a number
     userId: null
-
-}
+};
 
 let transactionSchema = {
-    type: "DEPOSIT",
+    type: "DEPOSIT", // Consider using an enum for type
     amount: 0,
     accountId: null
-
-}
-
+};
 
 let loginSchema = {
-    username: "DEPOSIT",
-    password: 0,
-    data: null
+    username: "",
+    password: "" // Password should be a string
+};
 
+let tokenSchema = {
+    token: null,
+    data: null
+};
+
+
+function createUser(data = {}) {
+    return { ...userSchema, ...data };
 }
 
-export { userSchema, accountSchema, transactionSchema, loginSchema};
+function createAccount(data = {}) {
+    return { ...accountSchema, ...data };
+}
+
+function createTransaction(data = {}) {
+    return { ...transactionSchema, ...data };
+}
+
+function createLogin(data = {}) {
+    return { ...loginSchema, ...data };
+}
+
+function createToken(data = {}) {
+    return { ...tokenSchema, ...data };
+}
+
+export { createUser, createAccount, createTransaction, createLogin, createToken };

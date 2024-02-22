@@ -55,16 +55,14 @@ public class LoginService {
 
 
     public long getAuthenticationCode(UserRole role) {
-        switch (role) {
-            case ADMIN:
-                return ADMINCODE;
-            case USER:
-                return USERCODE;
+        return switch (role) {
+            case ADMIN -> ADMINCODE;
+            case USER -> USERCODE;
             // Add more cases for other roles if necessary
-            default:
-                throw new IllegalArgumentException("Unknown user role: " + role);
-                // Or return a default code if that's more appropriate for your application
-        }
+            default -> throw new IllegalArgumentException("Unknown user role: " + role);
+
+            // Or return a default code if that's more appropriate for your application
+        };
     }
 
     public boolean checkToken(Long token, UserRole role) {
