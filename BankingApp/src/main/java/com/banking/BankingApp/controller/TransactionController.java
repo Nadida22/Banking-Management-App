@@ -1,5 +1,6 @@
 package com.banking.BankingApp.controller;
-import com.banking.BankingApp.model.dto.LoginDTO;
+import com.banking.BankingApp.exception.InvalidAccountException;
+import com.banking.BankingApp.model.dto.TokenDTO;
 import com.banking.BankingApp.model.dto.TransactionDTO;
 import com.banking.BankingApp.model.dto.TransactionDatesDTO;
 import com.banking.BankingApp.model.enums.TransactionType;
@@ -16,6 +17,8 @@ import java.util.List;
 @Controller
 public class TransactionController {
 
+
+
     @Autowired
     TransactionService transactionService;
 
@@ -25,18 +28,22 @@ public class TransactionController {
 
 
     @PostMapping("/transaction")
-    public ResponseEntity<TransactionDTO> registerNewTransaction(@RequestBody LoginDTO<TransactionDTO> loginTransactionDto) {
-        loginService.authenticateUser(loginTransactionDto.getUsername(), loginTransactionDto.getPassword(), UserRole.USER);
-        TransactionDTO transactionDto = loginTransactionDto.getData();
-        TransactionDTO response = transactionService.createTransaction(transactionDto, loginTransactionDto.getUsername());
+    public ResponseEntity<TransactionDTO> registerNewTransaction(@RequestBody TokenDTO<TransactionDTO> tokenDto) {
+        UserRole requiredRole = UserRole.USER;
+        if(tokenDto.getUsername() == null){
+            throw new InvalidAccountException("Username is Required.");
+        }
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
+        TransactionDTO transactionDto = tokenDto.getData();
+        TransactionDTO response = transactionService.createTransaction(transactionDto, tokenDto.getUsername());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/transaction")
-    public ResponseEntity<List<TransactionDTO>> findAllTransactions(@RequestBody LoginDTO<?> loginDto) {
+    public ResponseEntity<List<TransactionDTO>> findAllTransactions(@RequestBody TokenDTO<?> tokenDto) {
         // Admin endpoint
-        loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.ADMIN);
-        // getting all accounts should require administrative authentication.
+        UserRole requiredRole = UserRole.ADMIN;
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
         List<TransactionDTO> response = transactionService.findAllTransactions();
         return new ResponseEntity<>(response, HttpStatus.OK);
 
@@ -44,37 +51,52 @@ public class TransactionController {
     }
 
     @GetMapping("/transaction/{accountId}")
-    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountId(@PathVariable Long accountId, @RequestBody LoginDTO<?> loginDto){
-        loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
-        List<TransactionDTO> response = transactionService.findTransactionsByAccountId(accountId, loginDto.getUsername());
+    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountId(@PathVariable Long accountId, @RequestBody TokenDTO<?> tokenDto){
+        UserRole requiredRole = UserRole.USER;
+        if(tokenDto.getUsername() == null){
+            throw new InvalidAccountException("Username is Required.");
+        }
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
+        List<TransactionDTO> response = transactionService.findTransactionsByAccountId(accountId, tokenDto.getUsername());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
     @GetMapping("/transaction/{accountId}/{type}")
-    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountIdAndType(@PathVariable Long accountId, @PathVariable String type, @RequestBody LoginDTO<?> loginDto){
+    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountIdAndType(@PathVariable Long accountId, @PathVariable String type, @RequestBody TokenDTO<?> tokenDto){
+        UserRole requiredRole = UserRole.USER;
+        if(tokenDto.getUsername() == null){
+            throw new InvalidAccountException("Username is Required.");
+        }
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
         TransactionType transactionType = TransactionType.valueOf(type.toUpperCase());
-        loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
-        List<TransactionDTO> response = transactionService.findTransactionsByAccountIdAndType(accountId, loginDto.getUsername(), transactionType);
+        List<TransactionDTO> response = transactionService.findTransactionsByAccountIdAndType(accountId, tokenDto.getUsername(), transactionType);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
     @GetMapping("/transaction/{transactionId}")
-    public ResponseEntity<TransactionDTO> findTransactionById(@PathVariable Long transactionId, @RequestBody LoginDTO<?> loginDto){
-        // exception being handled in Service.
-        loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.ADMIN);
-        TransactionDTO response = transactionService.findByTransactionId(transactionId, loginDto.getUsername());
+    public ResponseEntity<TransactionDTO> findTransactionById(@PathVariable Long transactionId, @RequestBody TokenDTO<?> tokenDto){
+        UserRole requiredRole = UserRole.USER;
+        if(tokenDto.getUsername() == null){
+            throw new InvalidAccountException("Username is Required.");
+        }
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
+        TransactionDTO response = transactionService.findByTransactionId(transactionId, tokenDto.getUsername());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
 
     @GetMapping("/transaction/{accountId}/filterByDate")
-    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountIdAndDate(@PathVariable Long accountId, @RequestBody LoginDTO<TransactionDatesDTO> loginDatesDTO){
-        loginService.authenticateUser(loginDatesDTO.getUsername(), loginDatesDTO.getPassword(), UserRole.USER);
-        TransactionDatesDTO dates = loginDatesDTO.getData();
-        List<TransactionDTO> response = transactionService.findTransactionsByAccountIdAndDate(accountId, loginDatesDTO.getUsername(), dates.getStartDate(), dates.getEndDate());
+    public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountIdAndDate(@PathVariable Long accountId, @RequestBody TokenDTO<TransactionDatesDTO> tokenDto){
+        UserRole requiredRole = UserRole.USER;
+        if(tokenDto.getUsername() == null){
+            throw new InvalidAccountException("Username is Required.");
+        }
+        loginService.checkToken(tokenDto.getToken(), requiredRole);
+        TransactionDatesDTO dates = tokenDto.getData();
+        List<TransactionDTO> response = transactionService.findTransactionsByAccountIdAndDate(accountId, tokenDto.getUsername(), dates.getStartDate(), dates.getEndDate());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

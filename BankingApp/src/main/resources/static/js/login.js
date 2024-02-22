@@ -1,31 +1,57 @@
+import { loginSchema } from './schemas.js';
 
-let form = document.getElementById("contactForm");
+let form = document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
 
 
-form.addEventListener("submit",(e) => {
+async function handleFormSubmit(e) {
     e.preventDefault();
-    userLogin();
-});
-
-async function userLogin() {
-    let username = document.getElementById("username").value;
-    let passwordInput = document.getElementById("password").value;
+    const formData = getFormData();
+    console.log(formData);
     try {
-        let response = await fetch(`http://localhost:8080/login`, {
+        const response = await loginUser(formData);
+        const responseData = await response.json();
+        if(response.ok){
+            console.log(responseData);
+         window.location.href = "/user-portal";
+         }
+
+
+        }
+     catch (error) {
+        console.error(error);
+        displayMessage("Account Not Created. Please Try Again");
+    }
+}
+
+
+function getFormData() {
+    return {
+        ...loginSchema,
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value
+    };
+
+
+}
+
+async function loginUser(userData) {
+    let loginUrl = `http://localhost:8080/user/login` ;
+    try {
+        let response = await fetch(loginUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify ({
-                username: username,
-                password: passwordInput
-            })
+            body: JSON.stringify (userData)
         })
-        let data = await response.json();
-        console.log(data);
-        window.location.href = './useraccount.html'
+        return response;
 
     } catch(e) {
-        console.error("Incorrect username/password" + e);
+        console.error("Incorrect username or password" + e);
     }
+}
+
+
+function displayMessage(message) {
+    document.getElementById("account-created").innerHTML = message;
 }
