@@ -107,7 +107,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<?> login(@RequestBody LoginDTO<?> loginDTO){
         loginService.authenticateUser(loginDTO.getUsername(), loginDTO.getPassword(), UserRole.USER);
         return new ResponseEntity<>("{\"message\":\"Successfully Logged In\"}", HttpStatus.OK);
     }
