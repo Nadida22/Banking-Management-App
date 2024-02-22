@@ -29,7 +29,7 @@ public class LoginService {
         if(requiredRole == UserRole.ADMIN && foundUser.getRole() != UserRole.ADMIN){
             throw new UnauthorizedException("Admin Privileges Required.");
         }
-        return new LoginDTO<Boolean>(username, password);
+        return new LoginDTO<>(foundUser.getUsername(), foundUser.getPassword());
 
     }
 

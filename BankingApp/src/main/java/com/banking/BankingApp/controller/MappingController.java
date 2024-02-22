@@ -38,6 +38,12 @@ public class MappingController {
         return "redirect:/html/account/accounts.html";
     }
 
+    @RequestMapping("/user-portal")
+    public String userPortal(){return "redirect:/html/user/user-portal.html";}
+
+
+
+
 
 
 

@@ -46,5 +46,5 @@ async function registerUser(userData) {
 }
 
 function displayMessage(message) {
-    document.getElementById("account-created").innerHTML = message;
+    document.getElementById("signin-message").innerHTML = message;
 }

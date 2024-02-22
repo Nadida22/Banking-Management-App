@@ -39,7 +39,7 @@
                     <!-- Login form-->
                     <div class="bg-light rounded-4 py-5 px-4 px-md-5">
                         <div class="text-center mb-5">
-                            <h1 class="fw-bolder"></h1>
+                            <h1 class="fw-bolder">Log In</h1>
                         </div>
                         <div class="row gx-5 justify-content-center">
                             <div class="col-lg-8 col-xl-6">
@@ -54,8 +54,10 @@
                                         <input class="form-control" id="password" type="text" placeholder="pasword.." />
                                         <label for="password">Password</label>
                                     </div>
+                               <!-- Submit Button-->
                                 <div class="d-grid">
                                     <button id="submitButton" type="submit" class="btn btn-primary">Log In</button>
+                                    <p id="signin-message" style="text-align: center;"></p>
                                 </div>
                                 <div>
                                     <p style="text-align: center;">Don't have an account? <a href="signup.html">Sign up</a></p>
@@ -70,7 +72,6 @@
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="../../js/login.js"></script>
-        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <script src="../../js/login.js" type="module"></script>
     </body>
 </html>
