@@ -7,25 +7,30 @@ form.addEventListener("submit",(e) => {
     userLogin();
 });
 
+
+
+
 async function userLogin() {
-    let username = document.getElementById("username").value;
+    let usernameInput = document.getElementById("username").value;
     let passwordInput = document.getElementById("password").value;
+    let loginUrl = `http://localhost:8080/user/login` ;
     try {
-        let response = await fetch(`http://localhost:8080/login`, {
+        let response = await fetch(loginUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify ({
-                username: username,
+                username: usernameInput,
                 password: passwordInput
             })
         })
         let data = await response.json();
         console.log(response.status);
-        window.location.href = './useraccount.html'
+//        window.location.href = './useraccount.html'
 
     } catch(e) {
         console.error("Incorrect username/password" + e);
     }
 }
+

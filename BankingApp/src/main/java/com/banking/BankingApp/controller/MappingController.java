@@ -14,16 +14,32 @@ public class MappingController {
 
     @RequestMapping("/user-signup")
     public String signUp(){
-        return "redirect:/html/signup.html";
+        return "redirect:/html/user/signup.html";
     }
 
     @RequestMapping("/user-login")
     public String logIn(){
-        return "redirect:/html/login.html";
+        return "redirect:/html/user/login.html";
     }
 
     @RequestMapping("/accounts")
     public String accountCreate(){
-        return "redirect:/html/createaccount.html";
+        return "redirect:/html/account/createaccount.html";
     }
+
+    @RequestMapping("/customer-help")
+    public String customerHelp(){
+        return "redirect:/html/customerhelp.html";
+    }
+
+
+    @RequestMapping("/user-account")
+    public String userAccount(){
+        return "redirect:/html/account/accounts.html";
+    }
+
+
+
+
+
 }

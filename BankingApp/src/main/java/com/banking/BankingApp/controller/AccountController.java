@@ -44,7 +44,7 @@ public class AccountController {
     @PostMapping("/account")
     public ResponseEntity<AccountDTO> registerNewAccount(@RequestBody LoginDTO<AccountDTO> loginAccountDto) {
         // Admin endpoint
-        loginService.authenticateUser(loginAccountDto.getUsername(), loginAccountDto.getPassword(), UserRole.ADMIN);
+        loginService.authenticateUser(loginAccountDto.getUsername(), loginAccountDto.getPassword(), UserRole.USER);
         // New accounts should require administrative authentication.
         AccountDTO response = accountService.registerAccount(loginAccountDto.getData());
         // removed the exception, since validation and exception is being handled in service.
@@ -99,10 +99,10 @@ public class AccountController {
 
 
     // OK
-    @GetMapping("/user/{userId}/balance")
-    public ResponseEntity<?> getTotalBalance(@PathVariable Long userId, @RequestBody LoginDTO<?> loginDto){
+    @GetMapping("/user/balance")
+    public ResponseEntity<?> getTotalBalance(@RequestBody LoginDTO<Long> loginDto){
         loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
-        BigDecimal response = accountService.findTotalBalance(userId, loginDto.getUsername());
+        BigDecimal response = accountService.findTotalBalance(loginDto.getData(), loginDto.getUsername());
         return new ResponseEntity<>("{\"balance\": " + response + " }", HttpStatus.OK);
     }
 
