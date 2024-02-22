@@ -1,36 +1,55 @@
-
-
 let userSchema = {
     username: "",
     password: "",
     email: "",
     firstName: "",
     lastName: "",
-    isAdmin: "USER"
-
-}
+    isAdmin: "" 
+};
 
 let accountSchema = {
     accountType: "",
-    accountNumber: 0,
-    balance: null,
-    userId: null
-
-}
+    accountNumber: "", 
+    balance: 0,
+    userId: 0
+};
 
 let transactionSchema = {
-    type: "DEPOSIT",
+    type: "DEPOSIT", 
     amount: 0,
-    accountId: null
-
-}
-
+    accountId: 0
+};
 
 let loginSchema = {
-    username: "DEPOSIT",
-    password: 0,
-    data: null
+    username: "",
+    password: "" 
+};
 
+let tokenSchema = {
+    token: "",
+    username:"",
+    data: ""
+};
+
+
+function createUser(data = {}) {
+    return { ...userSchema, ...data };
 }
 
-export { userSchema, accountSchema, transactionSchema, loginSchema};
+function createAccount(data = {}) {
+    return { ...accountSchema, ...data };
+}
+
+function createTransaction(data = {}) {
+    return { ...transactionSchema, ...data };
+}
+
+function createLogin(data = {}) {
+    return { ...loginSchema, ...data };
+}
+
+function createToken(data = {}) {
+    return { ...tokenSchema, ...data };
+}
+
+export { createUser, createAccount, createTransaction, createLogin, createToken };

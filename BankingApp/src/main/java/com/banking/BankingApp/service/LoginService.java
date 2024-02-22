@@ -1,11 +1,14 @@
 package com.banking.BankingApp.service;
 
+import com.banking.BankingApp.controller.UserController;
 import com.banking.BankingApp.exception.NotFoundException;
 import com.banking.BankingApp.exception.UnauthorizedException;
 import com.banking.BankingApp.model.User;
 import com.banking.BankingApp.model.dto.LoginDTO;
 import com.banking.BankingApp.model.enums.UserRole;
 import com.banking.BankingApp.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,8 @@ public class LoginService {
 
     private static long USERCODE = 1000055001;
     private static long ADMINCODE = 1000055002;
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
 
     private static final Map<UserRole, Long> ROLE_TOKEN_MAP = new EnumMap<>(UserRole.class);
 
@@ -55,16 +60,14 @@ public class LoginService {
 
 
     public long getAuthenticationCode(UserRole role) {
-        switch (role) {
-            case ADMIN:
-                return ADMINCODE;
-            case USER:
-                return USERCODE;
+        return switch (role) {
+            case ADMIN -> ADMINCODE;
+            case USER -> USERCODE;
             // Add more cases for other roles if necessary
-            default:
-                throw new IllegalArgumentException("Unknown user role: " + role);
-                // Or return a default code if that's more appropriate for your application
-        }
+            default -> throw new IllegalArgumentException("Unknown user role: " + role);
+
+            // Or return a default code if that's more appropriate for your application
+        };
     }
 
     public boolean checkToken(Long token, UserRole role) {
@@ -77,6 +80,8 @@ public class LoginService {
         if (role == UserRole.USER && token.equals(ROLE_TOKEN_MAP.get(UserRole.ADMIN))) {
             return true;
         }
+        logger.info(token.toString());
+        logger.info(role.toString());
 
         throw new UnauthorizedException("Not authorized. Token does not match the expected token for role: " + role);
     }
