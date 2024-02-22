@@ -1,0 +1,62 @@
+banking-management-app
+│
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   ├── com
+│   │   │   │   └── yourapp
+│   │   │   │       ├── controller
+│   │   │   │       │   ├── AccountController.java
+│   │   │   │       │   ├── UserController.java
+│   │   │   │       │   └── TransactionController.java
+│   │   │   │       │
+│   │   │   │       ├── model
+│   │   │   │       │   ├── User.java
+│   │   │   │       │   ├── Account.java
+│   │   │   │       │   └── Transaction.java
+│   │   │   │       │
+│   │   │   │       ├── repository
+│   │   │   │       │   ├── UserRepository.java
+│   │   │   │       │   ├── AccountRepository.java
+│   │   │   │       │   └── TransactionRepository.java
+│   │   │   │       │
+│   │   │   │       ├── service
+│   │   │   │       │   ├── UserService.java
+│   │   │   │       │   ├── AccountService.java
+│   │   │   │       │   └── TransactionService.java
+│   │   │   │       │
+│   │   │   │       └── BankingManagementApplication.java
+│   │   │   │
+│   │   │   └── resources
+│   │   │       └── application.properties
+│   │   │
+│   │   └── webapp
+│   │       └── resources
+│   │           ├── css
+│   │           │   └── style.css
+│   │           ├── js
+│   │           │   └── script.js
+│   │           └── images
+│   │
+│   └── test
+│       └── java
+│           └── com
+│               └── yourapp
+│                   ├── controller
+│                   ├── service
+│                   └── repository
+│
+├── frontend
+│   ├── index.html
+│   ├── login.html
+│   ├── dashboard.html
+│   ├── accountDetails.html
+│   ├── transactionHistory.html
+│   ├── css
+│   │   └── style.css
+│   ├── js
+│   │   └── script.js
+│   └── images
+│
+├── pom.xml
+└── README.md
