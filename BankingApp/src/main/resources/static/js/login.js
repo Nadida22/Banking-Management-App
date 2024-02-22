@@ -1,3 +1,4 @@
+
 import { loginSchema } from './schemas.js';
 
 let form = document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
