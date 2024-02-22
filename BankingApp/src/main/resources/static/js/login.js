@@ -1,6 +1,7 @@
 import { createLogin } from './schemas.js';
 
 document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
+document.getElementById("logoutButton").addEventListener("click", logout);
 
 async function handleFormSubmit(e) {
     e.preventDefault();
@@ -53,4 +54,9 @@ async function loginUser(userData) {
 
 function displayMessage(message) {
     document.getElementById("signin-message").textContent = message;
+}
+
+function logout() {
+sessionStorage.removeItem("token");
+window.location.href = "homepage.html";
 }
