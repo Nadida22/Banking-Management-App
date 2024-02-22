@@ -1,3 +1,4 @@
+
 import { userSchema } from './schemas.js';
 
 document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
