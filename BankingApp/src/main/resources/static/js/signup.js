@@ -1,25 +1,51 @@
-let userName = document.getElementById("name");
-let userEmail = document.getElementById("email");
-let userPassword = document.getElementById("password");
-let button = document.getElementById("submitButton");
-let form = document.getElementById("contactForm")
 
+import { userSchema } from './schemas.js';
 
-button.addEventListener("click", registerUser);
+document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
 
-function registerUser(e) {
-    let formData = JSON.parse(localStorage.getItem("formData")) || [];
-    let user = {
-        name: userName.value,
-        email: userEmail.value,
-        password: userPassword.value
-    };
-        formData.push(user);
-        localStorage.setItem("formData", JSON.stringify(formData));
-        console.log("Account Created!")
-        let p  = document.createElement("p");
-        let nextStep = document.getElementById("submitSuccessMessage");
-        nextStep.appendChild(p);
-        nextStep.innerHTML = "Account created! Please log in " 
+async function handleFormSubmit(e) {
     e.preventDefault();
+    const formData = getFormData();
+    console.log(formData);
+    try {
+        const response = await registerUser(formData);
+        displayMessage("Account Created!");
+        if(response.ok){
+        window.location.href = "/login.html";
+
+        }
+    } catch (error) {
+        console.error(error);
+        displayMessage("Account Not Created. Please Try Again");
+    }
+}
+
+function getFormData() {
+    return {
+        ...userSchema,
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        email: document.getElementById("email").value,
+        firstName: document.getElementById("firstname").value,
+        lastName: document.getElementById("lastname").value,
+        isAdmin: document.getElementById("adminUser").value
+    };
+}
+
+async function registerUser(userData) {
+    const response = await fetch(`http://localhost:8080/user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData)
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+}
+
+function displayMessage(message) {
+    document.getElementById("signin-message").innerHTML = message;
 }

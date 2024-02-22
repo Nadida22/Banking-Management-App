@@ -26,6 +26,18 @@ public class GlobalExceptionHandler {
     }
 
 
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e, WebRequest request){
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler(InvalidAccountException.class)
     public ResponseEntity<ErrorResponse> handleInvalidAccountException(InvalidAccountException e, WebRequest request){
         ErrorResponse errorResponse = new ErrorResponse(
