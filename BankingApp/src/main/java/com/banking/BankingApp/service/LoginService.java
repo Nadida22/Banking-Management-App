@@ -20,7 +20,7 @@ public class LoginService {
     UserRepository userRepository;
 
 
-    public void authenticateUser(String username, String password, UserRole requiredRole){
+    public LoginDTO<?> authenticateUser(String username, String password, UserRole requiredRole){
         User foundUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found."));
         if(!password.equals(foundUser.getPassword())){
@@ -29,6 +29,7 @@ public class LoginService {
         if(requiredRole == UserRole.ADMIN && foundUser.getRole() != UserRole.ADMIN){
             throw new UnauthorizedException("Admin Privileges Required.");
         }
+        return new LoginDTO<Boolean>(username, password);
 
     }
 

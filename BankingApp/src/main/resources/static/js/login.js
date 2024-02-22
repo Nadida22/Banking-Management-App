@@ -22,7 +22,7 @@ async function userLogin() {
             })
         })
         let data = await response.json();
-        console.log(data);
+        console.log(response.status);
         window.location.href = './useraccount.html'
 
     } catch(e) {

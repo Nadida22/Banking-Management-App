@@ -61,6 +61,14 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+    @PostMapping("/user/login")
+    public ResponseEntity<LoginDTO<?>> loginUser(@RequestBody LoginDTO<?> loginDto){
+        LoginDTO<?> response = loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
     // OK
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable Long userId, @RequestBody LoginDTO loginUserDto){

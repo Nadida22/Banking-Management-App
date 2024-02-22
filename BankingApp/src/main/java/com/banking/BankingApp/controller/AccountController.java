@@ -34,8 +34,10 @@ public class AccountController {
     }
 
 
-
-
+    @RequestMapping("/accounts")
+    public String redirectToStaticPage(){
+        return "redirect:/html/signup.html";
+    }
 
 
     // OK
