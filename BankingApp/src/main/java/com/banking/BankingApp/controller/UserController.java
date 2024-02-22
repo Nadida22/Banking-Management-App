@@ -45,7 +45,7 @@ public class UserController {
 
     // OK
     @GetMapping("/user")
-    public ResponseEntity<List<UserDTO>> getAllUsers(@RequestBody LoginDTO loginDto){
+    public ResponseEntity<List<UserDTO>> getAllUsers(@RequestBody LoginDTO<?> loginDto){
         // Admin endpoint
         loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.ADMIN);
         List<UserDTO> response = userService.findAllUsers();
@@ -55,7 +55,7 @@ public class UserController {
 
     // OK
     @GetMapping("/user/{userId}")
-    public ResponseEntity<UserDTO> findUserById(@PathVariable Long userId, @RequestBody LoginDTO loginDto){
+    public ResponseEntity<UserDTO> findUserById(@PathVariable Long userId, @RequestBody LoginDTO<?> loginDto){
         loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.ADMIN);
         UserDTO response = userService.findByUserId(loginDto.getUsername(), userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
