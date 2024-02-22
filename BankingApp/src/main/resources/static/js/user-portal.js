@@ -1,7 +1,7 @@
 import { createToken, createUser} from './schemas.js';
 
 const url = `http://localhost:8080`;
-const activeToken = sessionStorage.getItem("token");
+const activeToken = parseInt(sessionStorage.getItem("token"));
 const activeUsername = sessionStorage.getItem("username");
 
 (async () => {
@@ -24,6 +24,7 @@ const activeUsername = sessionStorage.getItem("username");
 
 async function getUserData() {
     // get User info
+    console.log(activeToken);
     let userData = createToken(activeUsername, activeToken);
     const usernameUrl = `http://localhost:8080/username`;
     const response = await fetch(usernameUrl, {

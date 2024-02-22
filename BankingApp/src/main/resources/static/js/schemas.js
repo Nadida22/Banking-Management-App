@@ -4,30 +4,31 @@ let userSchema = {
     email: "",
     firstName: "",
     lastName: "",
-    isAdmin: false // Assuming boolean value
+    isAdmin: "" 
 };
 
 let accountSchema = {
     accountType: "",
-    accountNumber: "", // or use a number if appropriate
-    balance: 0, // Assuming balance is a number
-    userId: null
+    accountNumber: "", 
+    balance: 0,
+    userId: 0
 };
 
 let transactionSchema = {
-    type: "DEPOSIT", // Consider using an enum for type
+    type: "DEPOSIT", 
     amount: 0,
-    accountId: null
+    accountId: 0
 };
 
 let loginSchema = {
     username: "",
-    password: "" // Password should be a string
+    password: "" 
 };
 
 let tokenSchema = {
-    token: null,
-    data: null
+    token: "",
+    username:"",
+    data: ""
 };
 
 
