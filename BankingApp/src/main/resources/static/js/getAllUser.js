@@ -1,18 +1,23 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the select element for users
-    const usersSelect = document.getElementById('users');
+
+    let allUsers = document.getElementById('allUsers')
+    let userContainer = document.getElementById("userContainer")
+
 
     // Add event listener for change event
-    usersSelect.addEventListener('change', function() {
-        const selectedOption = usersSelect.value;
+    allUsers.addEventListener('click', function() {
 
-        if (selectedOption === 'allUsers') {
-            // Fetch all users from the backend
-            fetch('http://localhost:8080/user', {
-                method: 'GET',
+            const token = 1000055002;
+
+            const requestBody = {
+                    token: token
+                };
+
+            fetch('http://localhost:8080/user/all', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 }
+                body: JSON.stringify(requestBody)
             })
             .then(response => {
                 if (!response.ok) {
@@ -22,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(users => {
                 // Handle the response data and display it
-                const usersContainer = document.querySelector('.border.rounded.p-3');
                 usersContainer.innerHTML = ''; // Clear previous content
 
                 users.forEach(user => {
@@ -41,6 +45,4 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error fetching users:', error.message);
             });
-        }
     });
-});

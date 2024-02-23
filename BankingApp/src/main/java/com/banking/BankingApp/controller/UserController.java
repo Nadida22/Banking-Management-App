@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@CrossOrigin(origins = "http://localhost:63342")
 public class UserController {
 
 
@@ -31,6 +32,7 @@ public class UserController {
 
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
 
 
 
