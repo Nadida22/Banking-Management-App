@@ -1,5 +1,5 @@
 
-import { userSchema } from './schemas.js';
+import { createUser } from './schemas.js';
 
 document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
 
@@ -22,13 +22,13 @@ async function handleFormSubmit(e) {
 
 function getFormData() {
     return {
-        ...userSchema,
+        ...createUser,
         username: document.getElementById("username").value,
         password: document.getElementById("password").value,
         email: document.getElementById("email").value,
         firstName: document.getElementById("firstname").value,
         lastName: document.getElementById("lastname").value,
-        isAdmin: document.getElementById("adminUser").value
+        role: document.getElementById("adminUser").value
     };
 }
 
@@ -47,5 +47,5 @@ async function registerUser(userData) {
 }
 
 function displayMessage(message) {
-    document.getElementById("signin-message").innerHTML = message;
+    document.getElementById("account-created").innerHTML = message;
 }
