@@ -39,7 +39,10 @@ public class MappingController {
     }
 
     @RequestMapping("/user-portal")
-    public String userPortal(){return "redirect:/html/user/user-portal.html";}
+    public String userPortal(){ return "redirect:/html/user/user-portal.html";}
+
+    @RequestMapping("/admin-portal")
+    public String adminPortal(){ return "redirect:/html/user/admin-portal.html";}
 
 
 

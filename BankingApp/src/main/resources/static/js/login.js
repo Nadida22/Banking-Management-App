@@ -1,14 +1,13 @@
 import { createLogin } from './schemas.js';
-import { makePostRequest, makePatchRequest, makeDeleteRequest } from './requesthandlers.js';
 
-document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
-document.getElementById("logoutButton").addEventListener("click", logout);
+let ADMINTOKEN = 1000055002
 
 async function handleFormSubmit(e) {
     e.preventDefault();
     const formData = getFormData();
 
     try {
+        let redirectLink;
         const response = await loginUser(formData);
 
         if (response.ok) {
@@ -18,7 +17,22 @@ async function handleFormSubmit(e) {
             sessionStorage.setItem("token", responseData.token);
             sessionStorage.setItem("username", responseData.username);
 
-            window.location.href = "/user-portal";
+            let token = parseInt(responseData.token.trim());
+
+            console.log(token);
+            if (token === ADMINTOKEN){
+                redirectLink = "/admin-portal";
+            } else {
+                redirectLink = "/user-portal";
+            }
+
+
+
+
+            // Logic to redirect based on user role
+
+             window.location.href = redirectLink;
+
         } else {
             // Handle HTTP errors
             throw new Error('Failed to log in');
@@ -57,7 +71,5 @@ function displayMessage(message) {
     document.getElementById("signin-message").textContent = message;
 }
 
-function logout() {
-sessionStorage.removeItem("token");
-window.location.href = "homepage.html";
-}
+let submitButton = document.getElementById("submitButton")
+submitButton.addEventListener("click", handleFormSubmit);
