@@ -1,4 +1,5 @@
 import { createLogin } from './schemas.js';
+import { makePostRequest, makePatchRequest, makeDeleteRequest } from './requesthandlers.js';
 
 document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
 

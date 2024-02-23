@@ -1,3 +1,5 @@
+// schema structure to simplify the process of submitting requests with specific fields.
+
 let userSchema = {
     username: "",
     password: "",
@@ -26,7 +28,7 @@ let loginSchema = {
 };
 
 let tokenSchema = {
-    token: 1,
+    token: 0,
     username:"",
     data: ""
 };

@@ -58,7 +58,7 @@ public class AccountController {
 
     // OK
     @PostMapping("/account/all")
-    public ResponseEntity<List<AccountDTO>> findAllAccounts(@RequestBody TokenDTO<?> tokenDto){
+    public ResponseEntity<?> findAllAccounts(@RequestBody TokenDTO<?> tokenDto){
         // Admin endpoint
         UserRole requiredRole = UserRole.ADMIN;
         loginService.checkToken(tokenDto.getToken(), requiredRole);
@@ -84,7 +84,7 @@ public class AccountController {
 
     // OK
     @PostMapping("/account/{accountId}")
-    public ResponseEntity<AccountDTO> findAccountById(@PathVariable Long accountId, @RequestBody TokenDTO<AccountDTO> tokenDto){
+    public ResponseEntity<?> findAccountById(@PathVariable Long accountId, @RequestBody TokenDTO<AccountDTO> tokenDto){
         // exception being handled in Service.
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){
@@ -97,7 +97,7 @@ public class AccountController {
 
     // OK
     @PostMapping("/user/{userId}/account")
-    public ResponseEntity<List<AccountDTO>> findAllAccountsByUserId(@PathVariable Long userId, @RequestBody TokenDTO<?> tokenDto){
+    public ResponseEntity<?> findAllAccountsByUserId(@PathVariable Long userId, @RequestBody TokenDTO<?> tokenDto){
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){
             throw new InvalidAccountException("Username is Required.");
