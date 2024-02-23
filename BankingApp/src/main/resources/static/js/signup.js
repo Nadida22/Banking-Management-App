@@ -1,7 +1,9 @@
-
-import { userSchema } from './schemas.js';
+import { makePostRequest, makeDeleteRequest } from './requesthandlers.js';
+import { createToken } from './schemas.js';
 
 document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
+
+
 
 async function handleFormSubmit(e) {
     e.preventDefault();
@@ -33,17 +35,9 @@ function getFormData() {
 }
 
 async function registerUser(userData) {
-    const response = await fetch(`http://localhost:8080/user`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData)
-    });
+const url = "http://localhost:8080/user";
+return makePostRequest(url, userData);
 
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-
-    return response.json();
 }
 
 function displayMessage(message) {
