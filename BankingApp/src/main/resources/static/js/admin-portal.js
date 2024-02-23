@@ -17,15 +17,39 @@ const userToken = createToken({
 
 let allUsersButton = document.getElementById("allUsers");
 let allAccountsButton = document.getElementById("allAccounts");
+let contentContainer = document.getElementById("user-container");
 
 allUsersButton.addEventListener("click", () => handleAllUsersClick());
 allAccountsButton.addEventListener("click", () => handleAllAccountsClick());
+
+
+async function displayAllAccounts(accountData) {
+let accounts = accountData.flat(Infinity);
+for(let i = 0;  i < accounts.length; i++){
+const accountDiv = document.createElement('div');
+accountDiv.className = 'account-item mb-3 d-flex justify-content-between align-items-center'
+
+let accountInfo = document.createElement('p');
+accountInfo.textContent = `${accounts[i].firstName} - ${accounts[i].lastName}`;
+accountDiv.appendChild(textContent);
+contentContainer.append(accountDiv);
+
+
+}
+
+
+}
+
+
+
 
 async function handleAllUsersClick() {
     try {
         let userData = await getAllUsers(userToken);
         console.log(userData);
-        // Call display function here if needed
+        // call display
+        displayAllUsers(userData)
+
     } catch (error) {
         console.error("Error fetching all users:", error);
     }
@@ -35,7 +59,8 @@ async function handleAllAccountsClick() {
     try {
         let accountData = await getAllAccounts(userToken);
         console.log(accountData);
-        // Call display function here if needed
+        // Call display
+        displayAllAccounts(accountData)
     } catch (error) {
         console.error("Error fetching all accounts:", error);
     }
