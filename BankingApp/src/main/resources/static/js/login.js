@@ -16,7 +16,11 @@ async function handleFormSubmit(e) {
             sessionStorage.setItem("token", responseData.token);
             sessionStorage.setItem("username", responseData.username);
 
-            window.location.href = "/user-portal";
+
+            // Logic to redirect based on user role
+
+             window.location.href = "/admin-portal";
+
         } else {
             // Handle HTTP errors
             throw new Error('Failed to log in');
