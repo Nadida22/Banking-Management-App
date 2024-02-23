@@ -5,6 +5,10 @@ public class TokenDTO<T> {
     public TokenDTO() {
     }
 
+    public TokenDTO(int token) {
+        this.token = token;
+    }
+
     public TokenDTO(long token, T data) {
 
         this.token = token;
@@ -55,3 +59,4 @@ public class TokenDTO<T> {
 
 
 }
+
