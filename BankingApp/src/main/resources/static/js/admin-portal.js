@@ -1,4 +1,4 @@
-import { makePostRequest } from './requesthandlers.js';
+import { makePostRequest, makeDeleteRequest } from './requesthandlers.js';
 import { createToken } from './schemas.js';
 
 const url = `http://localhost:8080`;
@@ -7,7 +7,7 @@ const activeToken = sessionStorage.getItem("token");
 
 if (!activeUsername || !activeToken) {
     console.error("Username or token is missing in sessionStorage");
-    // Handle missing username or token here
+    // Handle missing username or token
 }
 
 const userToken = createToken({ 
@@ -47,6 +47,25 @@ async function displayAllAccounts(accountData) {
         cardBody.appendChild(accountDetails);
         accountCard.appendChild(cardBody);
         contentContainer.appendChild(accountCard);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-danger btn-sm';
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = async () => {
+            try {
+                // type checking 
+                console.log(typeof account.accountId);
+                console.log(account.accountId);
+                await deleteAccount(account.accountId);
+                displayAllAccounts(await getAllAccounts(userToken)); // Refresh accounts
+            } catch (error) {
+                console.error("Error deleting account:", error);
+            }
+        };
+
+        cardBody.appendChild(deleteButton);
+
+
     });
 }
 
@@ -57,7 +76,7 @@ async function displayAllUsers(userData) {
 
     users.forEach(user => {
         const userCard = document.createElement('div');
-        userCard.className = 'card mb-3 shadow-sm'; // Added shadow for depth
+        userCard.className = 'card mb-3 shadow-sm'; // shadow?
 
         const cardBody = document.createElement('div');
         cardBody.className = 'card-body';
@@ -74,11 +93,11 @@ async function displayAllUsers(userData) {
         const numberOfAccounts = user.accounts ? user.accounts.length : 'No accounts';
         userDetails.textContent = `Email: ${user.email}, Accounts: ${numberOfAccounts}`;
 
-        // Additional User Details (Optional)
+     
         if (user.additionalDetails) {
             const additionalDetails = document.createElement('p');
-            additionalDetails.className = 'card-text text-muted'; // Muted text for less important details
-            additionalDetails.textContent = user.additionalDetails; // Assuming this is a string
+            additionalDetails.className = 'card-text text-muted'; 
+            additionalDetails.textContent = user.additionalDetails; 
             cardBody.appendChild(additionalDetails);
         }
 
@@ -86,13 +105,53 @@ async function displayAllUsers(userData) {
         cardBody.appendChild(userDetails);
         userCard.appendChild(cardBody);
         contentContainer.appendChild(userCard);
+
+            // Create Delete Button
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'btn btn-danger btn-sm';
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = async () => {
+                try {
+                    console.log(typeof user.userId);
+                    await deleteUser(user.userId);
+                    displayAllUsers(await getAllUsers(userToken)); // Refresh users
+                } catch (error) {
+                    console.error("Error deleting user:", error);
+                }
+            };
+    
+            cardBody.appendChild(deleteButton);
+
     });
 }
 
 
 
 
+// Not working 
+async function deleteAccount(accountId) {
+    try {
+        const deleteUrl = `${url}/account/${accountId}`;
+        console.log(userToken);
+        const response = await makeDeleteRequest(deleteUrl, userToken);
+        if (!response.ok) {
+            throw new Error(`HTTP status ${response.status}`);
+        }
+        return response.json(); // Or however you handle the response
+    } catch (error) {
+        console.error("Error deleting account:", error);
+    }
+    }
 
+
+
+
+
+
+async function deleteUser(userId) {
+    const deleteUrl = `${url}/user/${userId}`;
+    return makeDeleteRequest(deleteUrl, userToken);
+}
 
 
 async function handleAllUsersClick() {
