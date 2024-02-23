@@ -1,4 +1,4 @@
-let getAccounts = document.getElementById("accountInfo");
+let accounts = document.getElementById("accountInfo");
 console.log(getAccounts);
 let userAccounts = [];
 
@@ -21,17 +21,21 @@ function populateUserAccounts(accounts) {
         <br>
         <br>
         `;
-        getAccounts.append(newDiv);
+        accounts.append(newDiv);
         let withdraw = document.getElementById("withdraw");
         let deposit = document.getElementById("deposit");
         let inputAmount = document.getElementById("inputamount");
     }
 }
-
-(async () => {
-    let response = await fetch(`http://localhost:8080/user/1/account`);
+if(sessionStorage) {
+    (async () => {
+    let response = await fetch(`http://localhost:8080/users/${sessionStorage.getItem('token')}/accounts`);
     let data = await response.json();
-    console.log(data);
-    userAccounts = data;
-    populateUserAccounts(userAccounts);
+    accounts = data;
+    populateUserAccounts(data);
 })();
+}else {
+   window.location.href - 'login.html';
+}
+
+
