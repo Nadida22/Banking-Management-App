@@ -24,21 +24,73 @@ allAccountsButton.addEventListener("click", () => handleAllAccountsClick());
 
 
 async function displayAllAccounts(accountData) {
-let accounts = accountData.flat(Infinity);
-for(let i = 0;  i < accounts.length; i++){
-const accountDiv = document.createElement('div');
-accountDiv.className = 'account-item mb-3 d-flex justify-content-between align-items-center'
+    let accounts = accountData.flat(Infinity);
+    contentContainer.innerHTML = ''; // Clear previous content
 
-let accountInfo = document.createElement('p');
-accountInfo.textContent = `${accounts[i].firstName} - ${accounts[i].lastName}`;
-accountDiv.appendChild(textContent);
-contentContainer.append(accountDiv);
+    accounts.forEach(account => {
+        const accountCard = document.createElement('div');
+        accountCard.className = 'card mb-3';
 
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
 
+        const accountInfo = document.createElement('h5');
+        accountInfo.className = 'card-title';
+        const formattedAccountNumber = account.accountNumber.toString().slice(-4);
+        accountInfo.textContent = `Account ID: ${account.accountId}, User ID: ${account.userId}`;
+
+        const accountDetails = document.createElement('p');
+        accountDetails.className = 'card-text';
+        accountDetails.textContent = `Account Number: XXXX XXXX XXXX ${formattedAccountNumber}, Balance: $${account.balance}`;
+
+        cardBody.appendChild(accountInfo);
+        cardBody.appendChild(accountDetails);
+        accountCard.appendChild(cardBody);
+        contentContainer.appendChild(accountCard);
+    });
 }
 
 
+async function displayAllUsers(userData) {
+    let users = userData.flat(Infinity);
+    contentContainer.innerHTML = ''; // Clear previous content
+
+    users.forEach(user => {
+        const userCard = document.createElement('div');
+        userCard.className = 'card mb-3 shadow-sm'; // Added shadow for depth
+
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+
+        // User Information
+        const userInfo = document.createElement('h5');
+        userInfo.className = 'card-title';
+        const fullName = `${user.firstName} ${user.lastName}`;
+        userInfo.textContent = `Name: ${fullName}, User ID: ${user.userId}`;
+
+        // User Details
+        const userDetails = document.createElement('p');
+        userDetails.className = 'card-text';
+        const numberOfAccounts = user.accounts ? user.accounts.length : 'No accounts';
+        userDetails.textContent = `Email: ${user.email}, Accounts: ${numberOfAccounts}`;
+
+        // Additional User Details (Optional)
+        if (user.additionalDetails) {
+            const additionalDetails = document.createElement('p');
+            additionalDetails.className = 'card-text text-muted'; // Muted text for less important details
+            additionalDetails.textContent = user.additionalDetails; // Assuming this is a string
+            cardBody.appendChild(additionalDetails);
+        }
+
+        cardBody.appendChild(userInfo);
+        cardBody.appendChild(userDetails);
+        userCard.appendChild(cardBody);
+        contentContainer.appendChild(userCard);
+    });
 }
+
+
+
 
 
 
@@ -46,7 +98,7 @@ contentContainer.append(accountDiv);
 async function handleAllUsersClick() {
     try {
         let userData = await getAllUsers(userToken);
-        console.log(userData);
+        // console.log(userData);
         // call display
         displayAllUsers(userData)
 
@@ -58,7 +110,7 @@ async function handleAllUsersClick() {
 async function handleAllAccountsClick() {
     try {
         let accountData = await getAllAccounts(userToken);
-        console.log(accountData);
+        // console.log(accountData);
         // Call display
         displayAllAccounts(accountData)
     } catch (error) {
