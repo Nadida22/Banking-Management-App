@@ -57,8 +57,8 @@ public class AccountController {
 
 
     // OK
-    @GetMapping("/account")
-    public ResponseEntity<List<AccountDTO>> findAllAccounts(@RequestBody TokenDTO<?> tokenDto){
+    @PostMapping("/account/all")
+    public ResponseEntity<?> findAllAccounts(@RequestBody TokenDTO<?> tokenDto){
         // Admin endpoint
         UserRole requiredRole = UserRole.ADMIN;
         loginService.checkToken(tokenDto.getToken(), requiredRole);
@@ -83,8 +83,8 @@ public class AccountController {
     }
 
     // OK
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<AccountDTO> findAccountById(@PathVariable Long accountId, @RequestBody TokenDTO<AccountDTO> tokenDto){
+    @PostMapping("/account/{accountId}")
+    public ResponseEntity<?> findAccountById(@PathVariable Long accountId, @RequestBody TokenDTO<AccountDTO> tokenDto){
         // exception being handled in Service.
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){
@@ -96,8 +96,8 @@ public class AccountController {
     }
 
     // OK
-    @GetMapping("/user/{userId}/account")
-    public ResponseEntity<List<AccountDTO>> findAllAccountsByUserId(@PathVariable Long userId, @RequestBody TokenDTO<?> tokenDto){
+    @PostMapping("/user/{userId}/account")
+    public ResponseEntity<?> findAllAccountsByUserId(@PathVariable Long userId, @RequestBody TokenDTO<?> tokenDto){
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){
             throw new InvalidAccountException("Username is Required.");
@@ -110,7 +110,7 @@ public class AccountController {
 
 
     // OK
-    @GetMapping("/user/{userId}/balance")
+    @PostMapping("/user/{userId}/balance")
     public ResponseEntity<?> getTotalBalance(@PathVariable Long userId, @RequestBody TokenDTO<Long> tokenDto){
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){

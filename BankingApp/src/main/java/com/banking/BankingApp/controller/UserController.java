@@ -46,7 +46,7 @@ public class UserController {
     }
 
     // OK
-    @GetMapping("/user")
+    @PostMapping("/user/all")
     public ResponseEntity<List<UserDTO>> getAllUsers(@RequestBody TokenDTO<?> tokenDto){
         // Admin endpoint
         UserRole requiredRole = UserRole.ADMIN;
@@ -57,7 +57,7 @@ public class UserController {
 
 
     // OK
-    @GetMapping("/user/{userId}")
+    @PostMapping("/user/{userId}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable Long userId, @RequestBody TokenDTO<?> tokenDto){
         // admin
         UserRole requiredRole = UserRole.USER;
@@ -66,7 +66,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/username")
+    @PostMapping("/username")
     public ResponseEntity<UserDTO> findUserByUsername(@RequestBody TokenDTO<?> tokenDto){
         // admin
         UserRole requiredRole = UserRole.USER;
@@ -83,19 +83,10 @@ public class UserController {
     @PostMapping("/user/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDto){
         long token = loginService.authenticateUser(loginDto.getUsername(), loginDto.getPassword(), UserRole.USER);
-        logger.info(String.valueOf(token));
-
-
-
-        // create the json with the string
+        // create the json String
         String response = "{"
                 + "\"token\":\"" + token + "\","
                 + "\"username\":\"" + loginDto.getUsername() + "\"}";
-
-
-
-
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

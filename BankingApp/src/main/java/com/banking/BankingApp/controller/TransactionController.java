@@ -39,7 +39,7 @@ public class TransactionController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/transaction")
+    @PostMapping("/transaction/all")
     public ResponseEntity<List<TransactionDTO>> findAllTransactions(@RequestBody TokenDTO<?> tokenDto) {
         // Admin endpoint
         UserRole requiredRole = UserRole.ADMIN;
@@ -50,7 +50,7 @@ public class TransactionController {
 
     }
 
-    @GetMapping("/transaction/{accountId}")
+    @PostMapping("/transaction/{accountId}")
     public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountId(@PathVariable Long accountId, @RequestBody TokenDTO<?> tokenDto){
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){
@@ -62,7 +62,7 @@ public class TransactionController {
     }
 
 
-    @GetMapping("/transaction/{accountId}/{type}")
+    @PostMapping("/transaction/{accountId}/{type}")
     public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountIdAndType(@PathVariable Long accountId, @PathVariable String type, @RequestBody TokenDTO<?> tokenDto){
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){
@@ -75,7 +75,7 @@ public class TransactionController {
     }
 
 
-    @GetMapping("/transaction/{transactionId}")
+    @PostMapping("/transaction/{transactionId}")
     public ResponseEntity<TransactionDTO> findTransactionById(@PathVariable Long transactionId, @RequestBody TokenDTO<?> tokenDto){
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){
@@ -88,7 +88,7 @@ public class TransactionController {
 
 
 
-    @GetMapping("/transaction/{accountId}/filterByDate")
+    @PostMapping("/transaction/{accountId}/filterByDate")
     public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountIdAndDate(@PathVariable Long accountId, @RequestBody TokenDTO<TransactionDatesDTO> tokenDto){
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){

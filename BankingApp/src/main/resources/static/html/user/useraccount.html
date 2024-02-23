@@ -27,47 +27,56 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
                     <li class="nav-item"><a class="nav-link" href="../customerhelp.html">Customer Help</a></li>
-                    <li class="nav-item" id="logoutButton" ><a class="nav-link" >Log Out</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../homepage.html">Log Out</a></li>
+
                 </ul>
             </div>
         </div>
     </nav>
-   <!-- Dashboard Section-->
-   <section class="py-5">
-    <div class="container px-5 mb-5">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">Dashboard</span></h1>
-        </div>
-        <div class="row gx-5 justify-content-center">
-            <div class="col-lg-11 col-xl-9 col-xxl-8">
+    <!-- Dashboard Section-->
+    <section class="py-5">
+        <div class="container px-5 mb-5">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">Dashboard</span></h1>
+            </div>
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-11 col-xl-9 col-xxl-8">
                     <!-- Account Overview Card-->
                     <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
-                        <div class="card-body p-5">
-                            <h2 class="fw-bolder">Overview</h2>
-                            <div id="overview">
-                                        <p><strong>Total Balance:</strong> <span class="fw-bolder" id="account-balance"></span></p>
+                        <div class="card-body p-0">
+                            <div class="d-flex align-items-center">
+                                <div class="p-5">
+                                    <h2 class="fw-bolder">Account Overview</h2>
+                                    <div id="accountInfo">
+                                        <p><strong>Total Balance:</strong> <span class="account-balance fw-bolder">$1304.34</span></p>
+                                        <p><strong>Account Number:</strong> 123456789</p>
+                                        <p><strong>Account Type:</strong> Checking</p>
                                         <!-- Add more account details as needed -->
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <!-- List of All Accounts -->
                     <div class="card overflow-hidden shadow rounded-4 border-0 mb-5">
                         <div class="card-body p-5">
                             <h2 class="fw-bolder">All Accounts</h2>
-                            <div id="accounts-container">
-                            <!--- All Accounts-->
-                                </div>
-                                </div>
-                            </div>
-                            <p>Create accounts <a href="../account/createaccount.html">here.</a></p>
+                            <ul id="allAccounts">
+                                <li>Account 1 - Checking - $500.00</li>
+                                <li>Account 2 - Savings - $800.34</li>
+                                <!-- Placeholder for account list. Replace with dynamic content -->
+                            </ul>
                         </div>
                     </div>
+                    <p>Create accounts <a href="../account/createaccount.html">here.</a></p>
                 </div>
-            </section>
-        </main>
-<!-- Bootstrap core JS-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+            </div>
+        </div>
+    </section>
+</main>
+
 <!-- Core theme JS-->
-<script type="module" src="../../js/user-portal.js"></script>
+<script type="module" src="../../js/useraccount.js"></script>
 <script type="module" src="../../js/login.js"></script>
 </body>
 </html>
