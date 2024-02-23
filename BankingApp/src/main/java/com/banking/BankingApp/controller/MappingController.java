@@ -44,6 +44,9 @@ public class MappingController {
     @RequestMapping("/admin-portal")
     public String adminPortal(){ return "redirect:/html/user/admin-portal.html";}
 
+    @RequestMapping("/admin-create-acoount")
+    public String adminCreateAccount(){ return "redirect:/html/account/create-account.html";}
+
 
 
 
