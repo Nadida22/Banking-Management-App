@@ -137,7 +137,7 @@ async function deleteAccount(accountId) {
         if (!response.ok) {
             throw new Error(`HTTP status ${response.status}`);
         }
-        return response.json(); // Or however you handle the response
+        return response.json();
     } catch (error) {
         console.error("Error deleting account:", error);
     }

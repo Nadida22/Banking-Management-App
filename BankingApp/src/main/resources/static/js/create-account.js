@@ -37,7 +37,26 @@ async function populateDropdown() {
 }
 
 
-document.getElementById('accountForm').addEventListener('submit', async (e) => {
+
+
+async function registerAccount(tokenAccountData) {
+    const registerUrl = `${url}/account`; 
+    let response = await makePostRequest(registerUrl, tokenAccountData);
+    if(response.ok){
+        alert("The new bank account was successfully registered.")
+    } else{
+        alert("Bank Account Registration Not Successful.")
+    }
+    return response; 
+}
+
+async function getAllUsers(tokenData) {
+    const usernameUrl = `${url}/user/all`;
+    return makePostRequest(usernameUrl, tokenData);
+}
+
+
+document.getElementById('createAccountForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
 
@@ -52,14 +71,3 @@ let tokenAccountData = createToken({username: activeUsername, token: activeToken
 let response = await registerAccount(tokenAccountData);
 console.log(response);
 });
-
-async function registerAccount(tokenAccountData) {
-    const registerUrl = `${url}/account`; 
-    let response = await makePostRequest(registerUrl, tokenAccountData);
-    return response; 
-}
-
-async function getAllUsers(tokenData) {
-    const usernameUrl = `${url}/user/all`;
-    return makePostRequest(usernameUrl, tokenData);
-}

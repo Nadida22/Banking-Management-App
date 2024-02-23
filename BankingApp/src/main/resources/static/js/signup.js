@@ -1,9 +1,7 @@
-import { makePostRequest, makeDeleteRequest } from './requesthandlers.js';
-import { createToken } from './schemas.js';
+
+import { createUser } from './schemas.js';
 
 document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
-
-
 
 async function handleFormSubmit(e) {
     e.preventDefault();
@@ -24,22 +22,30 @@ async function handleFormSubmit(e) {
 
 function getFormData() {
     return {
-        ...userSchema,
+        ...createUser,
         username: document.getElementById("username").value,
         password: document.getElementById("password").value,
         email: document.getElementById("email").value,
         firstName: document.getElementById("firstname").value,
         lastName: document.getElementById("lastname").value,
-        isAdmin: document.getElementById("adminUser").value
+        role: document.getElementById("adminUser").value
     };
 }
 
 async function registerUser(userData) {
-const url = "http://localhost:8080/user";
-return makePostRequest(url, userData);
+    const response = await fetch(`http://localhost:8080/user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData)
+    });
 
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    return response.json();
 }
 
 function displayMessage(message) {
-    document.getElementById("signin-message").innerHTML = message;
+    document.getElementById("account-created").innerHTML = message;
 }
