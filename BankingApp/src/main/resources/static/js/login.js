@@ -1,12 +1,13 @@
 import { createLogin } from './schemas.js';
 
-
+let ADMINTOKEN = 1000055002
 
 async function handleFormSubmit(e) {
     e.preventDefault();
     const formData = getFormData();
 
     try {
+        let redirectLink;
         const response = await loginUser(formData);
 
         if (response.ok) {
@@ -16,10 +17,21 @@ async function handleFormSubmit(e) {
             sessionStorage.setItem("token", responseData.token);
             sessionStorage.setItem("username", responseData.username);
 
+            let token = parseInt(responseData.token.trim());
+
+            console.log(token);
+            if (token === ADMINTOKEN){
+                redirectLink = "/admin-portal";
+            } else {
+                redirectLink = "/user-portal";
+            }
+
+
+
 
             // Logic to redirect based on user role
 
-             window.location.href = "/admin-portal";
+             window.location.href = redirectLink;
 
         } else {
             // Handle HTTP errors
