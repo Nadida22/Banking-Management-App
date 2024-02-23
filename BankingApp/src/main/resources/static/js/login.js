@@ -1,8 +1,6 @@
 import { createLogin } from './schemas.js';
-import { makePostRequest, makePatchRequest, makeDeleteRequest } from './requesthandlers.js';
 
-document.getElementById("contactForm").addEventListener("submit", handleFormSubmit);
-document.getElementById("logoutButton").addEventListener("click", logout);
+
 
 async function handleFormSubmit(e) {
     e.preventDefault();
@@ -57,7 +55,5 @@ function displayMessage(message) {
     document.getElementById("signin-message").textContent = message;
 }
 
-function logout() {
-sessionStorage.removeItem("token");
-window.location.href = "homepage.html";
-}
+let submitButton = document.getElementById("submitButton")
+submitButton.addEventListener("click", handleFormSubmit);
