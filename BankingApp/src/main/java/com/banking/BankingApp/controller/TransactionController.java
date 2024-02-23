@@ -50,7 +50,7 @@ public class TransactionController {
 
     }
 
-    @PostMapping("/transaction/{accountId}")
+    @PostMapping("/transaction/account/{accountId}")
     public ResponseEntity<List<TransactionDTO>> findAllTransactionsByAccountId(@PathVariable Long accountId, @RequestBody TokenDTO<?> tokenDto){
         UserRole requiredRole = UserRole.USER;
         if(tokenDto.getUsername() == null){

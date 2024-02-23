@@ -33,7 +33,7 @@ const userToken = createToken({ username: activeUsername, token: activeToken });
             // handle undefined accounts
         } else {
             console.log(accounts[0]);
-            let accountsContainer = document.getElementById('accounts-container'); // Get the existing container
+            let accountsContainer = document.getElementById('content-container'); // Get the existing container
         
             for (let i = 0; i < accounts.length; i++) {
                 const accountDiv = document.createElement('div');
@@ -47,13 +47,13 @@ const userToken = createToken({ username: activeUsername, token: activeToken });
                 transactionsButton.className = 'btn btn-primary btn-sm';
                 transactionsButton.textContent = 'View Transactions';
                 transactionsButton.onclick = () => {
-                    window.location.href = `/transactions/${accounts[i].id}`; // Corrected to use accounts[i].id
+                    window.location.href = `/transactions/${accounts[i].id}`; 
                 };
         
                 accountDiv.appendChild(balanceInfo);
                 accountDiv.appendChild(transactionsButton);
                 
-                accountsContainer.appendChild(accountDiv); // Append to the existing container
+                accountsContainer.appendChild(accountDiv); 
             }
         }
             
