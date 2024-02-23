@@ -187,4 +187,5 @@ async function getAllAccounts(tokenData) {
     const accountsUrl = `${url}/account/all`;
     return makePostRequest(accountsUrl, tokenData);
 }
->>>>>>> origin/working
+
+
