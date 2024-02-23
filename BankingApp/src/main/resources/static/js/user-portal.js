@@ -3,8 +3,8 @@ import { createToken } from './schemas.js';
 
 
 const url = `http://localhost:8080`;
-const activeUsername = sessionStorage.getItem("username")?.trim();
-const activeToken = parseInt(sessionStorage.getItem("token")?.trim());
+const activeUsername = sessionStorage.getItem("username").trim();
+const activeToken = parseInt(sessionStorage.getItem("token").trim());
 
 // Centralize the token creation
 const userToken = createToken({ username: activeUsername, token: activeToken });
@@ -27,8 +27,6 @@ const userToken = createToken({ username: activeUsername, token: activeToken });
 
 
         let balanceDisplay = document.getElementById("account-balance");
-        let accountNumDisplay = document.getElementById("account-num");
-        let accountTypeDisplay = document.getElementById("account-type");
         balanceDisplay.innerHTML = `$ ${balance}`;
         console.log(accounts);
         if (accounts === undefined) {

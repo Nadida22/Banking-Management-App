@@ -1,46 +1,77 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the select element for users
-    const usersSelect = document.getElementById('users');
+import { makePostRequest } from './requesthandlers.js';
+import { createToken } from './schemas.js';
 
-    // Add event listener for change event
-    usersSelect.addEventListener('change', function() {
-        const selectedOption = usersSelect.value;
+const url = `http://localhost:8080`;
+const activeUsername = sessionStorage.getItem("username");
+const activeToken = sessionStorage.getItem("token");
 
-        if (selectedOption === 'allUsers') {
-            // Fetch all users from the backend
-            fetch('http://localhost:8080/user', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch users');
-                }
-                return response.json();
-            })
-            .then(users => {
-                // Handle the response data and display it
-                const usersContainer = document.querySelector('.border.rounded.p-3');
-                usersContainer.innerHTML = ''; // Clear previous content
+if (!activeUsername || !activeToken) {
+    console.error("Username or token is missing in sessionStorage");
+    // Handle missing username or token here
+}
 
-                users.forEach(user => {
-                    const userElement = document.createElement('div');
-                    userElement.innerHTML = `
-                        <p><strong>userId:</strong> ${user.userId} </p>
-                        <p><strong>Role:</strong> ${user.role} </p>
-                        <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <p><strong>Username:</strong> ${user.username}</p>
-                        <hr>
-                    `;
-                    usersContainer.appendChild(userElement);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching users:', error.message);
-            });
-        }
-    });
+const userToken = createToken({ 
+    username: activeUsername ? activeUsername.trim() : '', 
+    token: activeToken ? parseInt(activeToken.trim()) : 0 
 });
+
+let allUsersButton = document.getElementById("allUsers");
+let allAccountsButton = document.getElementById("allAccounts");
+let contentContainer = document.getElementById("user-container");
+
+allUsersButton.addEventListener("click", () => handleAllUsersClick());
+allAccountsButton.addEventListener("click", () => handleAllAccountsClick());
+
+
+async function displayAllAccounts(accountData) {
+let accounts = accountData.flat(Infinity);
+for(let i = 0;  i < accounts.length; i++){
+const accountDiv = document.createElement('div');
+accountDiv.className = 'account-item mb-3 d-flex justify-content-between align-items-center'
+
+let accountInfo = document.createElement('p');
+accountInfo.textContent = `${accounts[i].firstName} - ${accounts[i].lastName}`;
+accountDiv.appendChild(textContent);
+contentContainer.append(accountDiv);
+
+
+}
+
+
+}
+
+
+
+
+async function handleAllUsersClick() {
+    try {
+        let userData = await getAllUsers(userToken);
+        console.log(userData);
+        // call display
+        displayAllUsers(userData)
+
+    } catch (error) {
+        console.error("Error fetching all users:", error);
+    }
+}
+
+async function handleAllAccountsClick() {
+    try {
+        let accountData = await getAllAccounts(userToken);
+        console.log(accountData);
+        // Call display
+        displayAllAccounts(accountData)
+    } catch (error) {
+        console.error("Error fetching all accounts:", error);
+    }
+}
+
+async function getAllUsers(tokenData) {
+    const usernameUrl = `${url}/user/all`;
+    return makePostRequest(usernameUrl, tokenData);
+}
+
+async function getAllAccounts(tokenData) {
+    const accountsUrl = `${url}/account/all`;
+    return makePostRequest(accountsUrl, tokenData);
+}
